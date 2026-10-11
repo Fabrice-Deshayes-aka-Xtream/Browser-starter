@@ -23,7 +23,7 @@ jobs:
         run: |
           (cd build/chromium && zip -r "../../browser-starter-chromium-${GITHUB_REF_NAME}.zip" .)
           (cd build/firefox && zip -r "../../browser-starter-firefox-${GITHUB_REF_NAME}.zip" .)
-      - uses: softprops/action-gh-release@v2
+      - uses: softprops/action-gh-release@v3
         with:
           generate_release_notes: true
           files: browser-starter-*.zip
