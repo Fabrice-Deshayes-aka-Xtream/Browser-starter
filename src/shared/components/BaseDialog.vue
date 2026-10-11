@@ -17,7 +17,7 @@ watch(
 </script>
 
 <template>
-  <dialog ref="dialog" class="dialog" @close="emit('close')" @cancel.prevent>
+  <dialog ref="dialog" class="dialog" @close="emit('close')" @cancel.prevent="emit('close')">
     <div v-if="open" class="content">
       <header>
         <h2>{{ title }}</h2>

@@ -100,7 +100,6 @@ useSortableList(list, {
       ref="list"
       class="links"
       :class="[{ tiles, editing }, tiles && block.config.tileSize]"
-      :data-block-id="block.id"
     >
       <li
         v-for="link in links"

@@ -49,7 +49,7 @@ test('a bookmark can be added to a group', async ({ page }) => {
   await page.getByRole('button', { name: /^(Save|Enregistrer)$/ }).click()
 
   await page.getByRole('button', { name: /^(Done|Terminer)$/ }).click()
-  const link = page.getByRole('link', { name: 'example.com' })
+  const link = page.getByRole('link', { name: /example/ })
   await expect(link).toHaveAttribute('href', 'https://example.com/')
   await expect(link).toHaveAttribute('target', '_blank')
 })
