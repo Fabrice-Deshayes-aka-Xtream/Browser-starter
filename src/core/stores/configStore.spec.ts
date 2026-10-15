@@ -98,7 +98,7 @@ describe('configStore', () => {
 
       setActivePinia(createPinia())
       const store = useConfigStore()
-      const confirmReplace = vi.fn(() => true)
+      const confirmReplace = vi.fn<() => boolean>(() => true)
       expect(store.importWorkspaceJson(json, confirmReplace)).toBe('created')
       expect(confirmReplace).not.toHaveBeenCalled()
       expect(store.config.workspaces.map((w) => w.name)).toEqual(['Home', 'Work'])
@@ -124,7 +124,7 @@ describe('configStore', () => {
       imported.layout.margin = 12
       const json = JSON.stringify({ version: CONFIG_VERSION, workspace: imported })
 
-      const confirmReplace = vi.fn(() => true)
+      const confirmReplace = vi.fn<() => boolean>(() => true)
       expect(store.importWorkspaceJson(json, confirmReplace)).toBe('replaced')
       expect(confirmReplace).toHaveBeenCalledWith('home')
       expect(store.config.workspaces.map((w) => w.name)).toEqual(['home', 'Work'])
