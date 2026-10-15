@@ -1,6 +1,6 @@
 import { computed } from 'vue'
 import { useConfigStore } from '@/core/stores/configStore'
-import type { BlockType, Column } from '@/core/config/schema'
+import type { Block, BlockType, Column } from '@/core/config/schema'
 import { createBlock } from '@/features/blocks/blockRegistry'
 import * as ops from './layoutOperations'
 
@@ -29,6 +29,11 @@ export function useLayout() {
       const block = createBlock(type)
       apply(ops.addBlock(columns.value, columnId, block))
       return block
+    },
+    pasteBlock: (columnId: string, block: Block) => {
+      const copy = ops.cloneBlock(block)
+      apply(ops.addBlock(columns.value, columnId, copy))
+      return copy
     },
     removeBlock: (id: string) => apply(ops.removeBlock(columns.value, id)),
     moveBlock: (id: string, columnId: string, index: number) =>

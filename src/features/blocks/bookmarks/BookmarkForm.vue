@@ -100,12 +100,7 @@ async function onSubmit() {
         {{ $t('bookmarks.upload') }}
         <input type="file" accept="image/*" hidden @change="onUpload" />
       </label>
-      <button
-        type="button"
-        class="btn"
-        :disabled="!normalizedUrl || busy"
-        @click="redetectIcon"
-      >
+      <button type="button" class="btn" :disabled="!normalizedUrl || busy" @click="redetectIcon">
         {{ $t('bookmarks.autoIcon') }}
       </button>
       <button type="button" class="btn" :disabled="!icon" @click="removeIcon">

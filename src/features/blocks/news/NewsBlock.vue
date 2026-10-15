@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import type { Block } from '@/core/config/schema'
 import type { NewsItem } from './feedParser'
 import { fetchNews } from './newsApi'
+import { getSiteFavicon } from './siteFavicon'
 
 const props = defineProps<{ block: Extract<Block, { type: 'news' }> }>()
 
@@ -13,6 +14,20 @@ const { t, locale } = useI18n()
 const items = ref<NewsItem[]>([])
 const failedFeeds = ref(0)
 const loading = ref(false)
+const favicons = ref<Record<string, string>>({})
+
+const originOf = (link: string) => new URL(link).origin
+
+async function loadFavicons() {
+  if (props.block.config.itemIcon !== 'favicon') return
+  const origins = [...new Set(items.value.map((i) => originOf(i.link)))]
+  await Promise.all(
+    origins.map(async (origin) => {
+      const icon = await getSiteFavicon(origin)
+      if (icon) favicons.value = { ...favicons.value, [origin]: icon }
+    }),
+  )
+}
 
 async function refresh() {
   if (!props.block.config.feeds.length) {
@@ -24,6 +39,7 @@ async function refresh() {
   items.value = result.items
   failedFeeds.value = result.failedFeeds
   loading.value = false
+  void loadFavicons()
 }
 
 function relativeTime(date?: number): string {
@@ -48,7 +64,18 @@ onBeforeUnmount(() => clearInterval(timer))
     <ul v-else class="items">
       <li v-for="item in items" :key="item.link">
         <a :href="item.link" target="_blank" rel="noopener noreferrer">
-          <img v-if="item.image && block.config.showThumbnails" :src="item.image" alt="" loading="lazy" />
+          <img
+            v-if="block.config.itemIcon === 'thumbnail' && item.image"
+            :src="item.image"
+            alt=""
+            loading="lazy"
+          />
+          <img
+            v-else-if="block.config.itemIcon === 'favicon' && favicons[originOf(item.link)]"
+            class="favicon"
+            :src="favicons[originOf(item.link)]"
+            alt=""
+          />
           <span class="text">
             <span class="title">{{ item.title }}</span>
             <span class="meta">{{ item.source }} · {{ relativeTime(item.date) }}</span>
@@ -94,6 +121,13 @@ img {
   object-fit: cover;
 }
 
+.favicon {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: 0.1rem;
+  object-fit: contain;
+}
+
 .text {
   display: flex;
   flex-direction: column;
@@ -102,10 +136,12 @@ img {
 
 .title {
   font-size: 0.92rem;
+  overflow-wrap: anywhere;
 }
 
 .meta,
 .hint {
+  overflow-wrap: anywhere;
   font-size: 0.78rem;
   opacity: 0.65;
 }

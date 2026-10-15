@@ -1,5 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
+import { createDefaultWorkspace } from '../config/defaults'
+import { CONFIG_VERSION } from '../config/schema'
+import { ConfigImportError, serializeConfig } from '../config/serialization'
 import { useConfigStore } from './configStore'
 
 function createMemoryStorage(): Storage {
@@ -35,7 +38,7 @@ describe('configStore', () => {
   it('restores the stored configuration on load', async () => {
     const first = useConfigStore()
     first.config.settings.theme = 'light'
-    localStorage.setItem('browser-starter.config', first.exportJson())
+    localStorage.setItem('browser-starter.config', serializeConfig(first.config))
 
     setActivePinia(createPinia())
     const second = useConfigStore()
@@ -52,16 +55,6 @@ describe('configStore', () => {
     expect(store.workspace.layout.columns.length).toBeGreaterThan(0)
   })
 
-  it('replaces the configuration on import and keeps it on invalid input', () => {
-    const store = useConfigStore()
-    const exported = JSON.parse(store.exportJson())
-    exported.settings.theme = 'dark'
-    store.importJson(JSON.stringify(exported))
-    expect(store.config.settings.theme).toBe('dark')
-
-    expect(() => store.importJson('{}')).toThrow(/version/)
-    expect(store.config.settings.theme).toBe('dark')
-  })
   describe('workspaces', () => {
     it('adds, renames, reorders and activates workspaces', () => {
       const store = useConfigStore()
@@ -89,14 +82,85 @@ describe('configStore', () => {
       expect(store.config.workspaces).toHaveLength(1)
     })
 
-    it('exports and imports every workspace in one file', () => {
+    it('exports a given workspace, defaulting to the active one', () => {
       const store = useConfigStore()
-      store.addWorkspace('Work')
-      const json = store.exportJson()
+      const work = store.addWorkspace('Work')
+      expect(JSON.parse(store.exportWorkspaceJson()).workspace.name).toBe('Home')
+      const file = JSON.parse(store.exportWorkspaceJson(work.id))
+      expect(file.version).toBe(CONFIG_VERSION)
+      expect(file.workspace).toEqual(work)
+    })
+
+    it('creates a workspace from a file when its name is unknown, without confirmation', () => {
+      const source = useConfigStore()
+      source.addWorkspace('Work')
+      const json = source.exportWorkspaceJson(source.config.workspaces[1]!.id)
+
       setActivePinia(createPinia())
-      const other = useConfigStore()
-      other.importJson(json)
-      expect(other.config.workspaces.map((w) => w.name)).toEqual(['Home', 'Work'])
+      const store = useConfigStore()
+      const confirmReplace = vi.fn(() => true)
+      expect(store.importWorkspaceJson(json, confirmReplace)).toBe('created')
+      expect(confirmReplace).not.toHaveBeenCalled()
+      expect(store.config.workspaces.map((w) => w.name)).toEqual(['Home', 'Work'])
+    })
+
+    it('gives a new id to an imported workspace whose id is already used', () => {
+      const store = useConfigStore()
+      const other = createDefaultWorkspace('Other')
+      const json = JSON.stringify({
+        version: CONFIG_VERSION,
+        workspace: { ...other, id: store.workspace.id },
+      })
+      expect(store.importWorkspaceJson(json, () => true)).toBe('created')
+      const ids = store.config.workspaces.map((w) => w.id)
+      expect(new Set(ids).size).toBe(2)
+    })
+
+    it('replaces a workspace with the same name after confirmation, keeping id and position', () => {
+      const store = useConfigStore()
+      const home = store.workspace
+      store.addWorkspace('Work')
+      const imported = { ...createDefaultWorkspace('home'), id: 'from-file' }
+      imported.layout.margin = 12
+      const json = JSON.stringify({ version: CONFIG_VERSION, workspace: imported })
+
+      const confirmReplace = vi.fn(() => true)
+      expect(store.importWorkspaceJson(json, confirmReplace)).toBe('replaced')
+      expect(confirmReplace).toHaveBeenCalledWith('home')
+      expect(store.config.workspaces.map((w) => w.name)).toEqual(['home', 'Work'])
+      expect(store.config.workspaces[0]!.id).toBe(home.id)
+      expect(store.config.workspaces[0]!.layout.margin).toBe(12)
+      expect(store.workspace.id).toBe(home.id)
+    })
+
+    it('keeps the existing workspace when the replacement is declined', () => {
+      const store = useConfigStore()
+      const before = JSON.stringify(store.config)
+      const json = JSON.stringify({
+        version: CONFIG_VERSION,
+        workspace: {
+          ...createDefaultWorkspace('Home'),
+          layout: { columns: createDefaultWorkspace('x').layout.columns, margin: 20 },
+        },
+      })
+      expect(store.importWorkspaceJson(json, () => false)).toBe('cancelled')
+      expect(JSON.stringify(store.config)).toBe(before)
+    })
+
+    it('rejects invalid workspace files and leaves the configuration untouched', () => {
+      const store = useConfigStore()
+      const before = JSON.stringify(store.config)
+      const bad = [
+        '{nope',
+        '{}',
+        JSON.stringify({ version: CONFIG_VERSION, workspace: { id: 'x' } }),
+        JSON.stringify({ version: 999, workspace: createDefaultWorkspace('X') }),
+        serializeConfig(store.config),
+      ]
+      for (const json of bad) {
+        expect(() => store.importWorkspaceJson(json, () => true)).toThrow(ConfigImportError)
+      }
+      expect(JSON.stringify(store.config)).toBe(before)
     })
   })
 })

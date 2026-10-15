@@ -54,26 +54,41 @@ test('a bookmark can be added to a group', async ({ page }) => {
   await expect(link).toHaveAttribute('target', '_blank')
 })
 
-test('configuration can be exported and imported', async ({ page }) => {
+test('a workspace can be backed up and imported, replacing after confirmation', async ({
+  page,
+}) => {
   await page.goto('/')
   await page.getByRole('button', { name: /Settings|Paramètres/ }).click()
 
   const downloadPromise = page.waitForEvent('download')
-  await page.getByRole('button', { name: /Export|Exporter/ }).click()
+  await page.getByRole('button', { name: /Backup workspace|Sauvegarder l'espace/ }).click()
   const download = await downloadPromise
-  expect(download.suggestedFilename()).toBe('browser-starter-config.json')
-
-  const imported = JSON.parse(
+  expect(download.suggestedFilename()).toMatch(
+    /^\d{2}-\d{2}-\d{2}_\d{2}-\d{2}_BrowserStarter_.+\.json$/,
+  )
+  const file = JSON.parse(
     await (await import('node:fs/promises')).readFile((await download.path())!, 'utf8'),
   )
-  imported.settings.theme = 'dark'
+
+  const upload = (workspace: unknown) =>
+    page.locator('input[type="file"]').setInputFiles({
+      name: 'workspace.json',
+      mimeType: 'application/json',
+      buffer: Buffer.from(JSON.stringify({ version: file.version, workspace })),
+    })
+
+  // Unknown name: created without confirmation
+  await upload({ ...file.workspace, id: 'imported', name: 'Imported' })
+  await expect(page.locator('li input')).toHaveCount(2)
+
+  // Existing name: asks for confirmation, declining keeps the workspace
+  page.once('dialog', (dialog) => dialog.dismiss())
+  await upload({ ...file.workspace, name: 'Imported', layout: file.workspace.layout })
+  await expect(page.locator('li input')).toHaveCount(2)
+
   page.once('dialog', (dialog) => dialog.accept())
-  await page.locator('input[type="file"]').setInputFiles({
-    name: 'config.json',
-    mimeType: 'application/json',
-    buffer: Buffer.from(JSON.stringify(imported)),
-  })
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+  await upload({ ...file.workspace, name: 'Imported' })
+  await expect(page.locator('li input')).toHaveCount(2)
 })
 
 test('search engines are managed in edit mode only', async ({ page }) => {

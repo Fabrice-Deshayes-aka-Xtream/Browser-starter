@@ -1,0 +1,130 @@
+{
+  "categories": [
+    {
+      "id": "news",
+      "feeds": [
+        {
+          "title": "BBC World",
+          "url": "https://feeds.bbci.co.uk/news/world/rss.xml"
+        },
+        {
+          "title": "NPR",
+          "url": "https://feeds.npr.org/1001/rss.xml"
+        },
+        {
+          "title": "The Guardian – World",
+          "url": "https://www.theguardian.com/world/rss"
+        },
+        {
+          "title": "Al Jazeera",
+          "url": "https://www.aljazeera.com/xml/rss/all.xml"
+        },
+        {
+          "title": "NYT – World",
+          "url": "https://rss.nytimes.com/services/xml/rss/nyt/World.xml"
+        }
+      ]
+    },
+    {
+      "id": "science",
+      "feeds": [
+        {
+          "title": "NASA",
+          "url": "https://www.nasa.gov/feed/"
+        },
+        {
+          "title": "ScienceDaily",
+          "url": "https://www.sciencedaily.com/rss/all.xml"
+        },
+        {
+          "title": "Nature",
+          "url": "https://www.nature.com/nature.rss"
+        },
+        {
+          "title": "New Scientist",
+          "url": "https://www.newscientist.com/feed/home/"
+        },
+        {
+          "title": "Quanta Magazine",
+          "url": "https://www.quantamagazine.org/feed/"
+        }
+      ]
+    },
+    {
+      "id": "tech",
+      "feeds": [
+        {
+          "title": "Ars Technica",
+          "url": "https://feeds.arstechnica.com/arstechnica/index"
+        },
+        {
+          "title": "The Verge",
+          "url": "https://www.theverge.com/rss/index.xml"
+        },
+        {
+          "title": "Hacker News",
+          "url": "https://news.ycombinator.com/rss"
+        },
+        {
+          "title": "TechCrunch",
+          "url": "https://techcrunch.com/feed/"
+        },
+        {
+          "title": "Wired",
+          "url": "https://www.wired.com/feed/rss"
+        }
+      ]
+    },
+    {
+      "id": "economy",
+      "feeds": [
+        {
+          "title": "BBC Business",
+          "url": "https://feeds.bbci.co.uk/news/business/rss.xml"
+        },
+        {
+          "title": "CNBC",
+          "url": "https://www.cnbc.com/id/100003114/device/rss/rss.html"
+        },
+        {
+          "title": "The Guardian – Business",
+          "url": "https://www.theguardian.com/uk/business/rss"
+        }
+      ]
+    },
+    {
+      "id": "sport",
+      "feeds": [
+        {
+          "title": "BBC Sport",
+          "url": "https://feeds.bbci.co.uk/sport/rss.xml"
+        },
+        {
+          "title": "ESPN",
+          "url": "https://www.espn.com/espn/rss/news"
+        },
+        {
+          "title": "The Guardian – Sport",
+          "url": "https://www.theguardian.com/uk/sport/rss"
+        }
+      ]
+    },
+    {
+      "id": "culture",
+      "feeds": [
+        {
+          "title": "BBC Entertainment & Arts",
+          "url": "https://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml"
+        },
+        {
+          "title": "The Guardian – Culture",
+          "url": "https://www.theguardian.com/culture/rss"
+        },
+        {
+          "title": "Pitchfork",
+          "url": "https://pitchfork.com/feed/feed-news/rss"
+        }
+      ]
+    }
+  ]
+}

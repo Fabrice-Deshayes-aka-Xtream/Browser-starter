@@ -8,6 +8,7 @@ import { MIN_BLOCK_HEIGHT } from '../layoutOperations'
 import { useEditMode } from '@/shared/composables/useEditMode'
 import { useLayout } from '../useLayout'
 import { newBlockId } from '../useNewBlock'
+import { copiedBlock } from '../useClipboard'
 
 const props = defineProps<{ block: Block }>()
 
@@ -51,6 +52,15 @@ function save(config: Block['config']) {
       <span class="block-handle" :title="$t('layout.moveBlock')">⠿</span>
       <span class="spacer" />
       <button
+        type="button"
+        :title="$t('layout.copyBlock')"
+        :aria-label="$t('layout.copyBlock')"
+        :class="{ active: copiedBlock?.id === block.id }"
+        @click="copiedBlock = JSON.parse(JSON.stringify(block))"
+      >
+        ⧉
+      </button>
+      <button
         v-if="definition.editor"
         type="button"
         :aria-label="$t('layout.configureBlock')"
@@ -85,6 +95,7 @@ function save(config: Block['config']) {
       v-if="definition.editor"
       :open="configuring"
       :title="$t(`${definition.i18nKey}.name`)"
+      width="28rem"
       @close="configuring = false"
     >
       <component
@@ -142,6 +153,10 @@ function save(config: Block['config']) {
   background: transparent;
   color: inherit;
   cursor: pointer;
+}
+
+.tools button.active {
+  color: var(--accent, currentColor);
 }
 
 .resize-handle {

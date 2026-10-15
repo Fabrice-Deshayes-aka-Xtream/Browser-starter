@@ -26,12 +26,22 @@ export const weatherBlockConfigSchema = z.object({
   unit: z.enum(['celsius', 'fahrenheit']),
 })
 
-export const newsBlockConfigSchema = z.object({
-  title: z.string().default(''),
-  feeds: z.array(z.object({ id, url: z.url(), title: z.string().optional() })),
-  maxItems: z.number().int().min(1).max(50),
-  showThumbnails: z.boolean().default(true),
-})
+export const newsBlockConfigSchema = z.preprocess(
+  (value) => {
+    // Legacy configs stored a boolean `showThumbnails`.
+    if (typeof value === 'object' && value !== null && 'showThumbnails' in value) {
+      const { showThumbnails, ...rest } = value as Record<string, unknown>
+      return { itemIcon: showThumbnails === false ? 'none' : 'thumbnail', ...rest }
+    }
+    return value
+  },
+  z.object({
+    title: z.string().default(''),
+    feeds: z.array(z.object({ id, url: z.url(), title: z.string().optional() })),
+    maxItems: z.number().int().min(1).max(50),
+    itemIcon: z.enum(['thumbnail', 'favicon', 'none']).default('thumbnail'),
+  }),
+)
 
 export const bookmarkSchema = z.object({
   id,

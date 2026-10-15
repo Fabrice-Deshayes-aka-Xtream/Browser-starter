@@ -42,7 +42,7 @@ export const blockDefinitions: BlockDefinition[] = [
     component: NewsBlock,
     editor: NewsEditor,
     resizable: false,
-    createConfig: () => ({ title: '', feeds: [], maxItems: 10, showThumbnails: true }),
+    createConfig: () => ({ title: '', feeds: [], maxItems: 10, itemIcon: 'thumbnail' }),
   },
 ]
 

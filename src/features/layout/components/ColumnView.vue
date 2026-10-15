@@ -4,6 +4,7 @@ import Sortable from 'sortablejs'
 import type { Column } from '@/core/config/schema'
 import { useEditMode } from '@/shared/composables/useEditMode'
 import { useLayout } from '../useLayout'
+import { copiedBlock } from '../useClipboard'
 import BlockFrame from './BlockFrame.vue'
 
 defineProps<{ column: Column; removable: boolean }>()
@@ -37,9 +38,26 @@ onBeforeUnmount(() => sortable?.destroy())
   <div class="column" :style="{ flex: `${column.width} 1 0` }">
     <div v-if="editing" class="column-tools">
       <span class="column-handle" :title="$t('layout.moveColumn')">⠿</span>
-      <button v-if="removable" type="button" @click="layout.removeColumn(column.id)">
-        {{ $t('layout.removeColumn') }}
-      </button>
+      <span class="column-actions">
+        <button
+          v-if="copiedBlock"
+          type="button"
+          :title="$t('layout.pasteBlock')"
+          :aria-label="$t('layout.pasteBlock')"
+          @click="layout.pasteBlock(column.id, copiedBlock)"
+        >
+          📋
+        </button>
+        <button
+          v-if="removable"
+          type="button"
+          :title="$t('layout.removeColumn')"
+          :aria-label="$t('layout.removeColumn')"
+          @click="layout.removeColumn(column.id)"
+        >
+          🗑
+        </button>
+      </span>
     </div>
     <div ref="list" class="blocks" :class="{ editing }" :data-column-id="column.id">
       <BlockFrame v-for="block in column.blocks" :key="block.id" :block="block" />
@@ -51,7 +69,9 @@ onBeforeUnmount(() => sortable?.destroy())
 </template>
 
 <style scoped>
-.column-tools button {
+.column-actions {
+  display: flex;
+  gap: 0.25rem;
   margin-left: auto;
 }
 

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import type { Block, Column } from '@/core/config/schema'
 import {
   addBlock,
+  cloneBlock,
   moveBlock,
   moveColumn,
   removeColumn,
@@ -19,6 +20,24 @@ const block = (id: string): Block => ({
 const column = (id: string, blocks: Block[] = [], width = 1): Column => ({ id, width, blocks })
 
 describe('layoutOperations', () => {
+  it('clones a block with fresh ids', () => {
+    const source: Block = {
+      id: '1',
+      type: 'bookmarks',
+      height: null,
+      config: {
+        title: 't',
+        display: 'list',
+        tileSize: 'normal',
+        links: [{ id: 'l1', title: 'x', url: 'https://example.com' }],
+      },
+    }
+    const copy = cloneBlock(source)
+    expect(copy.id).not.toBe('1')
+    expect(copy.type === 'bookmarks' && copy.config.links[0]!.id).not.toBe('l1')
+    expect(copy.type === 'bookmarks' && copy.config.links[0]!.url).toBe('https://example.com')
+  })
+
   it('moves a column to another position', () => {
     const columns = [column('a'), column('b'), column('c')]
     expect(moveColumn(columns, 2, 0).map((c) => c.id)).toEqual(['c', 'a', 'b'])

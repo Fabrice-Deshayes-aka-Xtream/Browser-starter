@@ -57,6 +57,15 @@ export function addBlock(columns: Column[], columnId: string, block: Block): Col
   return columns.map((c) => (c.id === columnId ? { ...c, blocks: [...c.blocks, block] } : c))
 }
 
+/** Deep-copies a block, giving fresh ids to it and to the items it contains. */
+export function cloneBlock(block: Block): Block {
+  const copy = JSON.parse(JSON.stringify(block)) as Block
+  copy.id = createId()
+  if (copy.type === 'bookmarks') copy.config.links.forEach((l) => (l.id = createId()))
+  if (copy.type === 'news') copy.config.feeds.forEach((f) => (f.id = createId()))
+  return copy
+}
+
 export function removeBlock(columns: Column[], blockId: string): Column[] {
   return columns.map((c) => ({ ...c, blocks: c.blocks.filter((b) => b.id !== blockId) }))
 }
@@ -94,7 +103,10 @@ export function moveBookmark(
     blocks: c.blocks.map((b) => {
       if (b.type !== 'bookmarks') return b
       if (b.id === fromBlockId) {
-        return { ...b, config: { ...b.config, links: b.config.links.filter((l) => l.id !== linkId) } }
+        return {
+          ...b,
+          config: { ...b.config, links: b.config.links.filter((l) => l.id !== linkId) },
+        }
       }
       if (b.id === toBlockId) {
         const links = [...b.config.links]

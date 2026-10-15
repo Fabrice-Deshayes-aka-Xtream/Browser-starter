@@ -1,17 +1,20 @@
 # Browser starter
 
-A customizable start page / new tab for your browser: a multi-engine search bar and a free-form layout of columns and blocks. Everything is stored locally; no account, no server, no ads.
+A customizable start page / new tab for your browser: a multi-engine search bar and a free-form layout of columns and blocks. 
+Compatible with chromium-based browsers (Chrome, Edge, Vivaldi, Brave...) and Firefox.
+Everything is stored locally; no account, no server, no ads.
+Open source, MIT license. See [PRIVACY.md](PRIVACY.md) for details.
 
 ## Features
 
 - **Search bar** – Google by default; click the logo to switch to DuckDuckGo, Bing, Perplexity, YouTube, IMDb, Amazon, Wikipedia, GitHub, or add your own engine.
-- **Customizable layout** – any number of columns (1–8), resizable widths, blocks you can reorder, move between columns and resize in height. View mode by default, edit mode on demand.
+- **Customizable layout** – any number of columns (1–8), resizable widths, blocks you can reorder, move between columns. View mode by default, edit mode on demand.
 - **Blocks**
   - *Bookmarks*: titled groups of links, automatic favicon or your own uploaded icon, drag to reorder.
   - *Weather*: current conditions and forecast for a city ([Open-Meteo](https://open-meteo.com/), no API key).
-  - *News*: mix several RSS/Atom feeds of your choice in a single merged view, choose how many items to display, with or without thumbnails.
+  - *News*: mix several RSS/Atom feeds of your choice in a single merged view, choose how many items to display, with thumbnails, favicons or nothing. Add feeds from predefined lists per language (French, English) grouped by category (news, science, technology, business, sports, culture), or add a custom feed by URL and name.
 - **Workspaces** – create as many workspaces as you like, each with its own layout and blocks, e.g. one start page for home and another for work.
-- **Backup** – export/import the whole configuration as JSON.
+- **Backup** – export/import each workspace as JSON.
 - Light, dark or automatic theme; English and French.
 
 ## Screenshots
@@ -31,15 +34,10 @@ Edit mode lets you reorder blocks, move them between columns and resize columns 
 
 Add a bookmarks, weather or news block to any column.
 
-### Mixing RSS feeds
-![Mix RSS feeds](docs/screenshots/mix_rss_feeds.png)
-
-Combine several RSS/Atom feeds into a single merged news block.
-
 ### Settings
 ![Settings](docs/screenshots/settings.png)
 
-Configure workspaces, theme, language and configuration backup/import.
+Configure theme, language and workspaces.
 
 ### About
 ![About](docs/screenshots/about.png)
@@ -58,7 +56,7 @@ npm run build:extension
 - **Chrome / Edge / Vivaldi / Brave**: open `chrome://extensions` (or `edge://extensions`, `vivaldi://extensions`), enable developer mode, "Load unpacked" and select `build/chromium`.
 - **Firefox**: open `about:debugging#/runtime/this-firefox`, "Load Temporary Add-on" and select `build/firefox/manifest.json`. Firefox may require granting the "access to all sites" permission manually (needed to read RSS feeds and favicons).
 
-The extension replaces the new tab page. To use it as your home page too, set your browser's home page to the extension's new tab URL.
+This extension replaces your browser home page.
 
 ## Development
 

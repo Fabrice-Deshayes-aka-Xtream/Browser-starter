@@ -1,8 +1,13 @@
 import { defineStore } from 'pinia'
 import { computed, ref, watch } from 'vue'
-import { createDefaultConfig, createDefaultWorkspace } from '../config/defaults'
-import { parseConfig, serializeConfig } from '../config/serialization'
-import type { AppConfig } from '../config/schema'
+import { createDefaultConfig, createDefaultWorkspace, createId } from '../config/defaults'
+import {
+  parseConfig,
+  parseWorkspace,
+  serializeConfig,
+  serializeWorkspace,
+} from '../config/serialization'
+import type { AppConfig, Workspace } from '../config/schema'
 import { getStorageAdapter } from '../storage/storageAdapter'
 
 const STORAGE_KEY = 'browser-starter.config'
@@ -29,20 +34,36 @@ export const useConfigStore = defineStore('config', () => {
     loaded.value = true
   }
 
-  function replace(next: AppConfig) {
-    config.value = next
+  function exportWorkspaceJson(id: string = config.value.activeWorkspaceId): string {
+    return serializeWorkspace(config.value.workspaces.find((w) => w.id === id)!)
   }
 
-  function importJson(json: string) {
-    replace(parseConfig(json))
+  function findWorkspaceByName(name: string) {
+    const key = name.trim().toLowerCase()
+    return config.value.workspaces.find((w) => w.name.trim().toLowerCase() === key)
   }
 
-  function exportJson(): string {
-    return serializeConfig(config.value)
+  /** Creates the workspace, or replaces the one with the same name (keeping its id and position). */
+  function importWorkspace(imported: Workspace) {
+    const existing = findWorkspaceByName(imported.name)
+    if (existing) {
+      const index = config.value.workspaces.indexOf(existing)
+      config.value.workspaces[index] = { ...imported, id: existing.id }
+      return
+    }
+    const idTaken = config.value.workspaces.some((w) => w.id === imported.id)
+    config.value.workspaces.push({ ...imported, id: idTaken ? createId() : imported.id })
   }
 
-  function reset() {
-    replace(createDefaultConfig())
+  function importWorkspaceJson(
+    json: string,
+    confirmReplace: (name: string) => boolean,
+  ): 'created' | 'replaced' | 'cancelled' {
+    const imported = parseWorkspace(json)
+    const exists = !!findWorkspaceByName(imported.name)
+    if (exists && !confirmReplace(imported.name)) return 'cancelled'
+    importWorkspace(imported)
+    return exists ? 'replaced' : 'created'
   }
 
   function setActiveWorkspace(id: string) {
@@ -97,9 +118,9 @@ export const useConfigStore = defineStore('config', () => {
     workspace,
     loaded,
     load,
-    importJson,
-    exportJson,
-    reset,
+    exportWorkspaceJson,
+    findWorkspaceByName,
+    importWorkspaceJson,
     setActiveWorkspace,
     addWorkspace,
     renameWorkspace,

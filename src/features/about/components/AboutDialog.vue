@@ -14,7 +14,9 @@ const buildDate = new Date(APP_INFO.buildDate).toLocaleDateString(locale.value)
     <div class="about">
       <img class="logo" src="/icons/icon-128.png" alt="" width="96" height="96" />
       <h3>Browser starter</h3>
-      <p class="version">{{ $t('about.version', { version: APP_INFO.version, date: buildDate }) }}</p>
+      <p class="version">
+        {{ $t('about.version', { version: APP_INFO.version, date: buildDate }) }}
+      </p>
       <p>{{ $t('about.createdBy', { author: APP_INFO.author }) }}</p>
       <p class="links">
         <a :href="APP_INFO.licenseUrl" target="_blank" rel="noopener noreferrer">

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 
-const props = defineProps<{ open: boolean; title: string }>()
+const props = defineProps<{ open: boolean; title: string; width?: string }>()
 const emit = defineEmits<{ close: [] }>()
 
 const dialog = ref<HTMLDialogElement>()
@@ -17,7 +17,13 @@ watch(
 </script>
 
 <template>
-  <dialog ref="dialog" class="dialog" @close="emit('close')" @cancel.prevent="emit('close')">
+  <dialog
+    ref="dialog"
+    class="dialog"
+    :style="width ? { width: `min(${width}, 92vw)` } : undefined"
+    @close="emit('close')"
+    @cancel.prevent="emit('close')"
+  >
     <div v-if="open" class="content">
       <header>
         <h2>{{ title }}</h2>

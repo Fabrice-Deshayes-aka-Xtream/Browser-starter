@@ -54,12 +54,7 @@ useSortableList(list, {
     update({ links: next })
   },
   onTransfer: (item, from, to, newIndex) =>
-    layout.moveBookmark(
-      item.dataset.linkId!,
-      from.dataset.blockId!,
-      to.dataset.blockId!,
-      newIndex,
-    ),
+    layout.moveBookmark(item.dataset.linkId!, from.dataset.blockId!, to.dataset.blockId!, newIndex),
 })
 </script>
 
@@ -96,17 +91,8 @@ useSortableList(list, {
     </div>
     <h3 v-else-if="block.config.title" class="title">{{ block.config.title }}</h3>
 
-    <ul
-      ref="list"
-      class="links"
-      :class="[{ tiles, editing }, tiles && block.config.tileSize]"
-    >
-      <li
-        v-for="link in links"
-        :key="link.id"
-        class="link"
-        :data-link-id="link.id"
-      >
+    <ul ref="list" class="links" :class="[{ tiles, editing }, tiles && block.config.tileSize]">
+      <li v-for="link in links" :key="link.id" class="link" :data-link-id="link.id">
         <a
           :href="link.url"
           target="_blank"

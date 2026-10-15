@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.1.0 - 2026-10-15
+
+feat:
+- RSS block: 
+  - add feeds from predefined lists per language (French, English) grouped by category (news, science, technology, business, sports, culture), or add a custom feed by URL and name
+  - improve view (thumbnail, favicon or nothing)
+  - fix text cut if no space to wrap line on r
+- Settings: 
+  - allow workspace import/export, remove whole config import/export
+  - improve GUI 
+- Docs: update screenshots & README.md
+
+
 ## 1.0.0 - 2026-10-10
 
 First release.
