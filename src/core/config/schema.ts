@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import {z} from 'zod'
 
 export const CONFIG_VERSION = 3
 
@@ -38,7 +38,10 @@ export const newsBlockConfigSchema = z.preprocess(
   z.object({
     title: z.string().default(''),
     feeds: z.array(z.object({ id, url: z.url(), title: z.string().optional() })),
+    /** Total number of items loaded. */
     maxItems: z.number().int().min(1).max(50),
+    /** Items visible without scrolling; defaults to `maxItems` when absent (legacy configs). */
+    visibleItems: z.number().int().min(1).max(50).optional(),
     itemIcon: z.enum(['thumbnail', 'favicon', 'none']).default('thumbnail'),
   }),
 )

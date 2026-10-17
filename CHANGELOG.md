@@ -1,8 +1,15 @@
 # Changelog
 
+## unreleased
+
+feats:
+
+- RSS block:
+  - choose the number of visible items and the total number of loaded items; a scrollbar shows the rest
+
 ## 1.1.0 - 2026-10-15
 
-feat:
+feats:
 - RSS block: 
   - add feeds from predefined lists per language (French, English) grouped by category (news, science, technology, business, sports, culture), or add a custom feed by URL and name
   - improve view (thumbnail, favicon or nothing)

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { createId } from '@/core/config/defaults'
-import type { NewsBlockConfig } from '@/core/config/schema'
-import { getPresetCategories, type PresetFeed } from './presets/presets'
+import {computed, ref} from 'vue'
+import {useI18n} from 'vue-i18n'
+import {createId} from '@/core/config/defaults'
+import type {NewsBlockConfig} from '@/core/config/schema'
+import {getPresetCategories, type PresetFeed} from './presets/presets'
 
 const props = defineProps<{ config: NewsBlockConfig }>()
 const emit = defineEmits<{ save: [config: NewsBlockConfig]; cancel: [] }>()
@@ -11,6 +11,7 @@ const emit = defineEmits<{ save: [config: NewsBlockConfig]; cancel: [] }>()
 const { t, locale } = useI18n()
 const draft = ref<NewsBlockConfig>({
   ...props.config,
+  visibleItems: props.config.visibleItems ?? props.config.maxItems,
   feeds: props.config.feeds.map((f) => ({ ...f })),
 })
 const newUrl = ref('')
@@ -125,6 +126,10 @@ function removeFeed(id: string) {
     <label>
       {{ t('news.maxItems') }}
       <input v-model.number="draft.maxItems" type="number" min="1" max="50" />
+    </label>
+    <label>
+      {{ t('news.visibleItems') }}
+      <input v-model.number="draft.visibleItems" type="number" min="1" max="50"/>
     </label>
     <label>
       {{ t('news.itemIcon') }}

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { onBeforeUnmount, ref, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
-import type { Block } from '@/core/config/schema'
-import type { NewsItem } from './feedParser'
-import { fetchNews } from './newsApi'
-import { getSiteFavicon } from './siteFavicon'
+import {nextTick, onBeforeUnmount, ref, watch} from 'vue'
+import {useI18n} from 'vue-i18n'
+import type {Block} from '@/core/config/schema'
+import type {NewsItem} from './feedParser'
+import {fetchNews} from './newsApi'
+import {getSiteFavicon} from './siteFavicon'
 
 const props = defineProps<{ block: Extract<Block, { type: 'news' }> }>()
 
@@ -53,7 +53,39 @@ function relativeTime(date?: number): string {
 
 watch(() => props.block.config, refresh, { immediate: true, deep: true })
 const timer = setInterval(refresh, REFRESH_MS)
-onBeforeUnmount(() => clearInterval(timer))
+
+const list = ref<HTMLElement | null>(null)
+const listMaxHeight = ref<string | undefined>()
+
+// Item heights vary (wrapped titles), so the cap is measured from the first N rendered items.
+function updateListHeight() {
+  const el = list.value
+  const visible = props.block.config.visibleItems ?? props.block.config.maxItems
+  if (!el || el.children.length <= visible) {
+    listMaxHeight.value = undefined
+    return
+  }
+  const first = el.children[0] as HTMLElement
+  const last = el.children[visible - 1] as HTMLElement
+  listMaxHeight.value = `${last.offsetTop + last.offsetHeight - first.offsetTop}px`
+}
+
+let resizeObserver: ResizeObserver | undefined
+watch(list, (el) => {
+  resizeObserver?.disconnect()
+  if (!el) return
+  resizeObserver = new ResizeObserver(updateListHeight)
+  resizeObserver.observe(el)
+})
+watch(
+  [items, favicons, () => props.block.config.visibleItems, () => props.block.config.maxItems],
+  () => void nextTick(updateListHeight),
+  {flush: 'post'},
+)
+onBeforeUnmount(() => {
+  clearInterval(timer)
+  resizeObserver?.disconnect()
+})
 </script>
 
 <template>
@@ -61,7 +93,7 @@ onBeforeUnmount(() => clearInterval(timer))
     <h3 v-if="block.config.title" class="block-title">{{ block.config.title }}</h3>
     <p v-if="!block.config.feeds.length" class="hint">{{ t('news.noFeeds') }}</p>
     <p v-else-if="loading && !items.length" class="hint">{{ t('news.loading') }}</p>
-    <ul v-else class="items">
+    <ul v-else ref="list" class="items" :style="{ maxHeight: listMaxHeight }">
       <li v-for="item in items" :key="item.link">
         <a :href="item.link" target="_blank" rel="noopener noreferrer">
           <img
@@ -100,6 +132,7 @@ onBeforeUnmount(() => clearInterval(timer))
   margin: 0;
   padding: 0;
   list-style: none;
+  overflow-y: auto;
 }
 
 a {

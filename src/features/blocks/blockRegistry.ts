@@ -1,6 +1,6 @@
-import type { Component } from 'vue'
-import { createId } from '@/core/config/defaults'
-import type { Block, BlockType } from '@/core/config/schema'
+import type {Component} from 'vue'
+import {createId} from '@/core/config/defaults'
+import type {Block, BlockType} from '@/core/config/schema'
 import BookmarksBlock from './bookmarks/BookmarksBlock.vue'
 import NewsBlock from './news/NewsBlock.vue'
 import NewsEditor from './news/NewsEditor.vue'
@@ -42,7 +42,13 @@ export const blockDefinitions: BlockDefinition[] = [
     component: NewsBlock,
     editor: NewsEditor,
     resizable: false,
-    createConfig: () => ({ title: '', feeds: [], maxItems: 10, itemIcon: 'thumbnail' }),
+    createConfig: () => ({
+      title: '',
+      feeds: [],
+      maxItems: 10,
+      visibleItems: 5,
+      itemIcon: 'thumbnail'
+    }),
   },
 ]
 
