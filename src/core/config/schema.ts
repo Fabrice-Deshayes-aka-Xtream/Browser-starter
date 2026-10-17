@@ -28,12 +28,19 @@ export const weatherBlockConfigSchema = z.object({
 
 export const newsBlockConfigSchema = z.preprocess(
   (value) => {
+    if (typeof value !== 'object' || value === null) return value
+    let config = value as Record<string, unknown>
     // Legacy configs stored a boolean `showThumbnails`.
-    if (typeof value === 'object' && value !== null && 'showThumbnails' in value) {
-      const { showThumbnails, ...rest } = value as Record<string, unknown>
-      return { itemIcon: showThumbnails === false ? 'none' : 'thumbnail', ...rest }
+    if ('showThumbnails' in config) {
+      const {showThumbnails, ...rest} = config
+      config = {itemIcon: showThumbnails === false ? 'none' : 'thumbnail', ...rest}
     }
-    return value
+    // Early builds stored a single `filterTerms` list.
+    if ('filterTerms' in config) {
+      const {filterTerms, ...rest} = config
+      config = {includeTerms: filterTerms, ...rest}
+    }
+    return config
   },
   z.object({
     title: z.string().default(''),
@@ -42,6 +49,10 @@ export const newsBlockConfigSchema = z.preprocess(
     maxItems: z.number().int().min(1).max(50),
     /** Items visible without scrolling; defaults to `maxItems` when absent (legacy configs). */
     visibleItems: z.number().int().min(1).max(50).optional(),
+    /** Keep only items whose title contains at least one term. Empty = no restriction. */
+    includeTerms: z.array(z.string()).default([]),
+    /** Drop items whose title contains at least one term. */
+    excludeTerms: z.array(z.string()).default([]),
     itemIcon: z.enum(['thumbnail', 'favicon', 'none']).default('thumbnail'),
   }),
 )

@@ -135,6 +135,13 @@ export default {
     },
     maxItems: 'Total items loaded',
     visibleItems: 'Items visible (scroll for the rest)',
+    includeTerms: 'Include only titles containing (comma-separated)',
+    includeTermsHint:
+      'Only items whose title contains at least one of these terms will be shown. A term can have several words: the whole phrase must be in the title.',
+    excludeTerms: 'Exclude titles containing (comma-separated)',
+    excludeTermsHint:
+      'Items whose title contains at least one of these terms will be hidden. A term can have several words: the whole phrase must be in the title.',
+    termsPlaceholder: 'football, tennis, World Cup',
     itemIcon: 'Item icon',
     iconThumbnail: 'Article thumbnail',
     iconFavicon: 'Site favicon',

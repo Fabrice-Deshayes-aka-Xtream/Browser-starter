@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
-import type { Block } from '@/core/config/schema'
-import { getBlockDefinition } from '@/features/blocks/blockRegistry'
+import {computed, onMounted, ref} from 'vue'
+import type {Block} from '@/core/config/schema'
+import {getBlockDefinition} from '@/features/blocks/blockRegistry'
 import BaseDialog from '@/shared/components/BaseDialog.vue'
-import { useDrag } from '@/shared/composables/useDrag'
-import { MIN_BLOCK_HEIGHT } from '../layoutOperations'
-import { useEditMode } from '@/shared/composables/useEditMode'
-import { useLayout } from '../useLayout'
-import { newBlockId } from '../useNewBlock'
-import { copiedBlock } from '../useClipboard'
+import {useDrag} from '@/shared/composables/useDrag'
+import {MIN_BLOCK_HEIGHT} from '../layoutOperations'
+import {useEditMode} from '@/shared/composables/useEditMode'
+import {useLayout} from '../useLayout'
+import {newBlockId} from '../useNewBlock'
+import {copiedBlock} from '../useClipboard'
 
 const props = defineProps<{ block: Block }>()
 
@@ -95,7 +95,7 @@ function save(config: Block['config']) {
       v-if="definition.editor"
       :open="configuring"
       :title="$t(`${definition.i18nKey}.name`)"
-      width="28rem"
+      :width="definition.editorWidth ?? '28rem'"
       @close="configuring = false"
     >
       <component

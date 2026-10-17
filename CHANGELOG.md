@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - RSS block: choose the number of visible items and the total number of loaded items; a scrollbar shows the rest.
+- RSS block: filter items by title with comma-separated terms, to include only titles containing one of them and/or exclude titles containing one of them; multi-word terms are
+  matched as a whole string.
 
 ## [1.1.0] - 2026-10-15
 

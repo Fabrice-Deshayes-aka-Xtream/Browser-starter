@@ -136,6 +136,13 @@ export default {
     blockTitlePlaceholder: 'ex. Actualités tech',
     maxItems: "Nombre total d'articles chargés",
     visibleItems: "Articles affichés (ascenseur pour le reste)",
+    includeTerms: 'Inclure uniquement les titres contenant (séparés par des virgules)',
+    includeTermsHint:
+      "Seuls les articles dont le titre contient au moins un de ces termes seront affichés. Un terme peut comporter plusieurs mots : la chaîne complète doit être dans le titre.",
+    excludeTerms: 'Exclure les titres contenant (séparés par des virgules)',
+    excludeTermsHint:
+      "Les articles dont le titre contient au moins un de ces termes seront masqués. Un terme peut comporter plusieurs mots : la chaîne complète doit être dans le titre.",
+    termsPlaceholder: 'football, tennis, Coupe du monde',
     itemIcon: 'Icône des articles',
     iconThumbnail: 'Vignette de l’article',
     iconFavicon: 'Favicon du site',

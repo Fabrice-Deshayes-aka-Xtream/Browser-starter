@@ -15,6 +15,8 @@ export interface BlockDefinition {
   component: Component
   /** Optional configuration form; receives `config` and emits `save`. */
   editor?: Component
+  /** Width of the editor dialog (CSS length); defaults to 28rem. */
+  editorWidth?: string
   /** Whether the user can set a fixed height; otherwise the block fits its content. */
   resizable: boolean
   createConfig: () => Block['config']
@@ -41,12 +43,15 @@ export const blockDefinitions: BlockDefinition[] = [
     i18nKey: 'blocks.news',
     component: NewsBlock,
     editor: NewsEditor,
+    editorWidth: '52rem',
     resizable: false,
     createConfig: () => ({
       title: '',
       feeds: [],
       maxItems: 10,
       visibleItems: 5,
+      includeTerms: [],
+      excludeTerms: [],
       itemIcon: 'thumbnail'
     }),
   },
