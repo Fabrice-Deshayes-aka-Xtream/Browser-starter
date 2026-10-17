@@ -71,10 +71,15 @@ function updateListHeight() {
 }
 
 let resizeObserver: ResizeObserver | undefined
+let resizeFrame = 0
 watch(list, (el) => {
   resizeObserver?.disconnect()
   if (!el) return
-  resizeObserver = new ResizeObserver(updateListHeight)
+  // Deferred to the next frame: resizing the observed element synchronously triggers a "ResizeObserver loop" error.
+  resizeObserver = new ResizeObserver(() => {
+    cancelAnimationFrame(resizeFrame)
+    resizeFrame = requestAnimationFrame(updateListHeight)
+  })
   resizeObserver.observe(el)
 })
 watch(
@@ -84,6 +89,7 @@ watch(
 )
 onBeforeUnmount(() => {
   clearInterval(timer)
+  cancelAnimationFrame(resizeFrame)
   resizeObserver?.disconnect()
 })
 </script>

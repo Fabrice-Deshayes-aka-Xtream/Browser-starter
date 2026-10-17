@@ -1,11 +1,18 @@
-import type { WeatherBlockConfig } from '@/core/config/schema'
-import { conditionFromCode, type WeatherCondition } from './weatherCodes'
+import type {WeatherBlockConfig} from '@/core/config/schema'
+import {getStorageAdapter} from '@/core/storage/storageAdapter'
+import {conditionFromCode, type WeatherCondition} from './weatherCodes'
 
 type City = NonNullable<WeatherBlockConfig['city']>
 
 export interface WeatherData {
   current: { temperature: number; condition: WeatherCondition; humidity: number; wind: number }
   days: Array<{ date: string; condition: WeatherCondition; min: number; max: number }>
+}
+
+export interface CachedWeather {
+  /** Timestamp (ms) of the successful fetch. */
+  time: number
+  data: WeatherData
 }
 
 interface ForecastResponse {
@@ -71,11 +78,42 @@ export function parseForecast(data: ForecastResponse): WeatherData {
   }
 }
 
+const cacheKey = (city: City, forecastDays: number, unit: WeatherBlockConfig['unit']) =>
+  `browser-starter.weather.${city.latitude},${city.longitude},${forecastDays},${unit}`
+
+/** Last successfully fetched forecast, kept across browser restarts for offline use. */
+export async function readCachedWeather(
+  city: City,
+  forecastDays: number,
+  unit: WeatherBlockConfig['unit'],
+): Promise<CachedWeather | undefined> {
+  try {
+    const raw = await getStorageAdapter().get(cacheKey(city, forecastDays, unit))
+    const cached = raw ? (JSON.parse(raw) as Partial<CachedWeather>) : undefined
+    return cached?.data && cached.time ? (cached as CachedWeather) : undefined
+  } catch {
+    return undefined
+  }
+}
+
+async function writeCachedWeather(
+  city: City,
+  forecastDays: number,
+  unit: WeatherBlockConfig['unit'],
+  cached: CachedWeather,
+): Promise<void> {
+  try {
+    await getStorageAdapter().set(cacheKey(city, forecastDays, unit), JSON.stringify(cached))
+  } catch {
+    // Caching is best-effort.
+  }
+}
+
 export async function fetchWeather(
   city: City,
   forecastDays: number,
   unit: WeatherBlockConfig['unit'],
-): Promise<WeatherData> {
+): Promise<CachedWeather> {
   const url = new URL(FORECAST_URL)
   url.search = new URLSearchParams({
     latitude: String(city.latitude),
@@ -88,5 +126,7 @@ export async function fetchWeather(
   }).toString()
   const data = parseForecast(await getJson<ForecastResponse>(url))
   // The first daily entry is today: forecasts start tomorrow.
-  return { ...data, days: data.days.slice(1) }
+  const result = {time: Date.now(), data: {...data, days: data.days.slice(1)}}
+  await writeCachedWeather(city, forecastDays, unit, result)
+  return result
 }

@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Weather block: the refresh frequency is configurable in the block settings (default 30 minutes), and the date of the last update is displayed.
+- Weather block: the last loaded forecast is cached and shown when offline (including after restarting the browser); it is refreshed whenever the network is available.
 - "Today" block: shows the date, the local time and optional extra clocks for other time zones, and the next N events (default 5) of an iCal calendar URL; each part can be toggled
   in the block settings.
 - RSS block: choose the number of visible items and the total number of loaded items; a scrollbar shows the rest.

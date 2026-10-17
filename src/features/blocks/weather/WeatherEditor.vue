@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
-import type { WeatherBlockConfig } from '@/core/config/schema'
-import { searchCities } from './weatherApi'
+import {ref} from 'vue'
+import {useI18n} from 'vue-i18n'
+import type {WeatherBlockConfig} from '@/core/config/schema'
+import {searchCities} from './weatherApi'
 
 const props = defineProps<{ config: WeatherBlockConfig }>()
 const emit = defineEmits<{ save: [config: WeatherBlockConfig]; cancel: [] }>()
@@ -57,6 +57,14 @@ function pick(city: NonNullable<WeatherBlockConfig['city']>) {
       <select v-model="draft.unit">
         <option value="celsius">°C</option>
         <option value="fahrenheit">°F</option>
+      </select>
+    </label>
+    <label>
+      {{ t('weather.refreshMinutes') }}
+      <select v-model.number="draft.refreshMinutes">
+        <option v-for="m in [5, 15, 30, 60, 180, 360]" :key="m" :value="m">
+          {{ t('weather.refreshOption', {value: m}) }}
+        </option>
       </select>
     </label>
     <div class="actions">

@@ -1,32 +1,49 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
-import type { Block } from '@/core/config/schema'
-import { fetchWeather, type WeatherData } from './weatherApi'
-import { conditionIcon } from './weatherCodes'
+import {computed, onBeforeUnmount, ref, watch} from 'vue'
+import {useI18n} from 'vue-i18n'
+import type {Block} from '@/core/config/schema'
+import {type CachedWeather, fetchWeather, readCachedWeather, type WeatherData} from './weatherApi'
+import {conditionIcon} from './weatherCodes'
 
 const props = defineProps<{ block: Extract<Block, { type: 'weather' }> }>()
 
-const REFRESH_MS = 30 * 60 * 1000
 const { t, locale } = useI18n()
 
 const data = ref<WeatherData>()
+const updatedAt = ref<number>()
 const error = ref(false)
 const loading = ref(false)
 
 const unitSymbol = computed(() => (props.block.config.unit === 'celsius' ? '°C' : '°F'))
 const weekday = computed(() => new Intl.DateTimeFormat(locale.value, { weekday: 'short' }))
 const round = (value: number) => Math.round(value)
+const updatedLabel = computed(() =>
+  updatedAt.value === undefined
+    ? ''
+    : new Intl.DateTimeFormat(locale.value, {dateStyle: 'short', timeStyle: 'short'}).format(
+      updatedAt.value,
+    ),
+)
+
+function apply(entry: CachedWeather) {
+  data.value = entry.data
+  updatedAt.value = entry.time
+}
 
 async function refresh() {
   const { city, forecastDays, unit } = props.block.config
   if (!city) return
   loading.value = true
   try {
-    data.value = await fetchWeather(city, forecastDays, unit)
+    if (!data.value) {
+      const cached = await readCachedWeather(city, forecastDays, unit)
+      if (cached) apply(cached)
+    }
+    apply(await fetchWeather(city, forecastDays, unit))
     error.value = false
   } catch {
-    error.value = true
+    // Keep showing the cached forecast when offline.
+    error.value = !data.value
   } finally {
     loading.value = false
   }
@@ -36,12 +53,21 @@ watch(
   () => props.block.config,
   () => {
     data.value = undefined
+    updatedAt.value = undefined
     void refresh()
   },
   { immediate: true, deep: true },
 )
 
-const timer = setInterval(refresh, REFRESH_MS)
+let timer: ReturnType<typeof setInterval> | undefined
+watch(
+  () => props.block.config.refreshMinutes,
+  (minutes) => {
+    clearInterval(timer)
+    timer = setInterval(refresh, minutes * 60 * 1000)
+  },
+  {immediate: true},
+)
 onBeforeUnmount(() => clearInterval(timer))
 </script>
 
@@ -72,6 +98,7 @@ onBeforeUnmount(() => clearInterval(timer))
             <span class="min">{{ round(day.min) }}°</span>
           </li>
         </ul>
+        <p class="updated">{{ t('weather.updatedAt', {date: updatedLabel}) }}</p>
       </template>
     </template>
   </div>
@@ -81,6 +108,12 @@ onBeforeUnmount(() => clearInterval(timer))
 .city {
   margin: 0 0 0.5rem;
   font-size: 1rem;
+}
+
+.updated {
+  margin: 0.5rem 0 0;
+  font-size: 0.75rem;
+  opacity: 0.6;
 }
 
 .current {

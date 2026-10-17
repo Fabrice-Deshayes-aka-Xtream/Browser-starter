@@ -1,8 +1,43 @@
-import { describe, expect, it } from 'vitest'
-import { parseForecast } from './weatherApi'
-import { conditionFromCode } from './weatherCodes'
+import {afterEach, describe, expect, it, vi} from 'vitest'
+import {fetchWeather, parseForecast, readCachedWeather} from './weatherApi'
+import {conditionFromCode} from './weatherCodes'
 
 describe('weather', () => {
+  afterEach(() => vi.unstubAllGlobals())
+
+  it('caches the last forecast for offline use', async () => {
+    const store = new Map<string, string>()
+    vi.stubGlobal('localStorage', {
+      getItem: (k: string) => store.get(k) ?? null,
+      setItem: (k: string, v: string) => void store.set(k, v),
+    })
+    const city = {name: 'Paris', latitude: 48.8, longitude: 2.3}
+    expect(await readCachedWeather(city, 1, 'celsius')).toBeUndefined()
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          current: {
+            temperature_2m: 10,
+            weather_code: 0,
+            relative_humidity_2m: 50,
+            wind_speed_10m: 5
+          },
+          daily: {
+            time: ['2026-01-01', '2026-01-02'],
+            weather_code: [0, 61],
+            temperature_2m_max: [12, 9],
+            temperature_2m_min: [5, 4],
+          },
+        }),
+      }),
+    )
+    const fresh = await fetchWeather(city, 1, 'celsius')
+    expect(await readCachedWeather(city, 1, 'celsius')).toEqual(fresh)
+    expect(fresh.time).toBeGreaterThan(0)
+  })
+
   it('maps WMO codes to conditions', () => {
     expect(conditionFromCode(0)).toBe('clear')
     expect(conditionFromCode(63)).toBe('rain')

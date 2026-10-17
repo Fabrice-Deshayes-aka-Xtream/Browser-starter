@@ -98,6 +98,9 @@ export default {
     search: 'Search',
     forecastDays: 'Forecast days',
     unit: 'Temperature unit',
+    refreshMinutes: 'Refresh frequency',
+    refreshOption: 'Every {value} min',
+    updatedAt: 'Updated {date}',
     save: 'Save',
     cancel: 'Cancel',
     conditions: {

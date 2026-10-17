@@ -38,7 +38,7 @@ export const blockDefinitions: BlockDefinition[] = [
     component: WeatherBlock,
     editor: WeatherEditor,
     resizable: false,
-    createConfig: () => ({ city: null, forecastDays: 5, unit: 'celsius' }),
+    createConfig: () => ({city: null, forecastDays: 5, unit: 'celsius', refreshMinutes: 30}),
   },
   {
     type: 'today',

@@ -102,6 +102,9 @@ export default {
     search: 'Rechercher',
     forecastDays: 'Jours de prévision',
     unit: 'Unité de température',
+    refreshMinutes: 'Fréquence de rafraîchissement',
+    refreshOption: 'Toutes les {value} min',
+    updatedAt: 'Mis à jour le {date}',
     save: 'Enregistrer',
     cancel: 'Annuler',
     conditions: {
