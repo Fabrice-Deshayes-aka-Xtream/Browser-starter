@@ -66,6 +66,7 @@ export const newsBlockConfigSchema = z.preprocess(
     /** Drop items whose title contains at least one term. */
     excludeTerms: z.array(z.string()).default([]),
     itemIcon: z.enum(['thumbnail', 'favicon', 'none']).default('thumbnail'),
+    refreshMinutes: z.number().int().min(5).max(1440).default(15),
   }),
 )
 

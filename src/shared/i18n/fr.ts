@@ -160,6 +160,8 @@ export default {
     blockTitlePlaceholder: 'ex. Actualités tech',
     maxItems: "Nombre total d'articles chargés",
     visibleItems: "Articles affichés (ascenseur pour le reste)",
+    refreshMinutes: 'Fréquence de rafraîchissement',
+    refreshOption: 'Toutes les {value} min',
     includeTerms: 'Inclure uniquement les titres contenant (séparés par des virgules)',
     includeTermsHint:
       "Seuls les articles dont le titre contient au moins un de ces termes seront affichés. Un terme peut comporter plusieurs mots : la chaîne complète doit être dans le titre.",

@@ -2,6 +2,8 @@
 import {computed, onBeforeUnmount, ref, watch} from 'vue'
 import {useI18n} from 'vue-i18n'
 import type {Block} from '@/core/config/schema'
+import {readStoredJson, writeStoredJson} from '@/core/storage/jsonCache'
+import {todayKey} from '@/core/storage/cacheKeys'
 import {type CalendarEvent, parseIcal} from './icalParser'
 
 const props = defineProps<{ block: Extract<Block, { type: 'today' }> }>()
@@ -51,6 +53,9 @@ const events = ref<CalendarEvent[]>([])
 const loading = ref(false)
 const failed = ref(false)
 
+const cacheKey = todayKey
+const MAX_EVENTS = 50 // Matches the schema maximum of `eventCount`.
+
 async function refresh() {
   const {showEvents, icalUrl, eventCount} = props.block.config
   const url = icalUrl.trim().replace(/^webcal:/i, 'https:')
@@ -60,14 +65,21 @@ async function refresh() {
     return
   }
   loading.value = true
+  if (!events.value.length) {
+    // Show the last stored events instantly, dropping those that finished since.
+    const stored = await readStoredJson<CalendarEvent[]>(cacheKey(url))
+    events.value = (stored ?? []).filter((e) => e.end > Date.now()).slice(0, eventCount)
+  }
   try {
     const response = await fetch(url)
     if (!response.ok) throw new Error(`HTTP ${response.status}`)
-    events.value = parseIcal(await response.text(), Date.now(), eventCount)
+    const all = parseIcal(await response.text(), Date.now(), MAX_EVENTS)
+    events.value = all.slice(0, eventCount)
     failed.value = false
+    await writeStoredJson(cacheKey(url), all)
   } catch {
-    events.value = []
-    failed.value = true
+    // Keep the stored events when offline.
+    failed.value = !events.value.length
   } finally {
     loading.value = false
   }

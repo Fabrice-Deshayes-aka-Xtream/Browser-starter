@@ -1,4 +1,5 @@
 import type {WeatherBlockConfig} from '@/core/config/schema'
+import {weatherKey} from '@/core/storage/cacheKeys'
 import {getStorageAdapter} from '@/core/storage/storageAdapter'
 import {conditionFromCode, type WeatherCondition} from './weatherCodes'
 
@@ -78,8 +79,7 @@ export function parseForecast(data: ForecastResponse): WeatherData {
   }
 }
 
-const cacheKey = (city: City, forecastDays: number, unit: WeatherBlockConfig['unit']) =>
-  `browser-starter.weather.${city.latitude},${city.longitude},${forecastDays},${unit}`
+const cacheKey = weatherKey
 
 /** Last successfully fetched forecast, kept across browser restarts for offline use. */
 export async function readCachedWeather(

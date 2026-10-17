@@ -69,7 +69,8 @@ export const blockDefinitions: BlockDefinition[] = [
       visibleItems: 5,
       includeTerms: [],
       excludeTerms: [],
-      itemIcon: 'thumbnail'
+      itemIcon: 'thumbnail',
+      refreshMinutes: 15,
     }),
   },
 ]

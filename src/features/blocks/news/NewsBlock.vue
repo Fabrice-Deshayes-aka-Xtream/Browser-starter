@@ -3,12 +3,11 @@ import {nextTick, onBeforeUnmount, ref, watch} from 'vue'
 import {useI18n} from 'vue-i18n'
 import type {Block} from '@/core/config/schema'
 import type {NewsItem} from './feedParser'
-import {fetchNews} from './newsApi'
+import {fetchNews, readCachedNews} from './newsApi'
 import {getSiteFavicon} from './siteFavicon'
 
 const props = defineProps<{ block: Extract<Block, { type: 'news' }> }>()
 
-const REFRESH_MS = 15 * 60 * 1000
 const { t, locale } = useI18n()
 
 const items = ref<NewsItem[]>([])
@@ -35,6 +34,10 @@ async function refresh() {
     return
   }
   loading.value = true
+  if (!items.value.length) {
+    items.value = await readCachedNews(props.block.config)
+    if (items.value.length) void loadFavicons()
+  }
   const result = await fetchNews(props.block.config)
   items.value = result.items
   failedFeeds.value = result.failedFeeds
@@ -52,7 +55,15 @@ function relativeTime(date?: number): string {
 }
 
 watch(() => props.block.config, refresh, { immediate: true, deep: true })
-const timer = setInterval(refresh, REFRESH_MS)
+let timer: ReturnType<typeof setInterval> | undefined
+watch(
+  () => props.block.config.refreshMinutes,
+  (minutes) => {
+    clearInterval(timer)
+    timer = setInterval(refresh, minutes * 60 * 1000)
+  },
+  {immediate: true},
+)
 
 const list = ref<HTMLElement | null>(null)
 const listMaxHeight = ref<string | undefined>()

@@ -1,6 +1,10 @@
 export interface StorageAdapter {
   get(key: string): Promise<string | null>
   set(key: string, value: string): Promise<void>
+
+  remove(key: string): Promise<void>
+
+  keys(): Promise<string[]>
 }
 
 const hasExtensionStorage = () => typeof chrome !== 'undefined' && !!chrome.storage?.local
@@ -13,6 +17,12 @@ const extensionStorage: StorageAdapter = {
   async set(key, value) {
     await chrome.storage.local.set({ [key]: value })
   },
+  async remove(key) {
+    await chrome.storage.local.remove(key)
+  },
+  async keys() {
+    return Object.keys(await chrome.storage.local.get(null))
+  },
 }
 
 const webStorage: StorageAdapter = {
@@ -21,6 +31,12 @@ const webStorage: StorageAdapter = {
   },
   async set(key, value) {
     localStorage.setItem(key, value)
+  },
+  async remove(key) {
+    localStorage.removeItem(key)
+  },
+  async keys() {
+    return Array.from({length: localStorage.length}, (_, i) => localStorage.key(i)!)
   },
 }
 

@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { onMounted, watch } from 'vue'
-import { useConfigStore } from '@/core/stores/configStore'
-import { i18n } from '@/shared/i18n'
-import { useEngineFavicons } from '@/features/search/useEngineFavicons'
+import {onMounted, watch} from 'vue'
+import {useConfigStore} from '@/core/stores/configStore'
+import {pruneCache} from '@/core/storage/cacheCleanup'
+import {i18n} from '@/shared/i18n'
+import {useEngineFavicons} from '@/features/search/useEngineFavicons'
 import SearchBar from '@/features/search/components/SearchBar.vue'
 import EditToolbar from '@/features/layout/components/EditToolbar.vue'
 import LayoutGrid from '@/features/layout/components/LayoutGrid.vue'
@@ -14,6 +15,16 @@ const store = useConfigStore()
 useEngineFavicons()
 
 onMounted(() => store.load())
+
+// Once per page load, after the config is known: drop caches no block refers to anymore.
+const stopPruning = watch(
+  () => store.loaded,
+  (loaded) => {
+    if (!loaded) return
+    void pruneCache(store.config)
+    stopPruning()
+  },
+)
 
 watch(
   () => store.config.settings.locale,

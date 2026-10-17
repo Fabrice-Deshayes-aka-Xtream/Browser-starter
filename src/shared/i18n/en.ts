@@ -156,6 +156,8 @@ export default {
     },
     maxItems: 'Total items loaded',
     visibleItems: 'Items visible (scroll for the rest)',
+    refreshMinutes: 'Refresh frequency',
+    refreshOption: 'Every {value} min',
     includeTerms: 'Include only titles containing (comma-separated)',
     includeTermsHint:
       'Only items whose title contains at least one of these terms will be shown. A term can have several words: the whole phrase must be in the title.',

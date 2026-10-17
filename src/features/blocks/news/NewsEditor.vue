@@ -160,6 +160,14 @@ function removeFeed(id: string) {
         <input v-model.number="draft.visibleItems" type="number" min="1" max="50"/>
       </label>
       <label>
+        {{ t('news.refreshMinutes') }}
+        <select v-model.number="draft.refreshMinutes">
+          <option v-for="m in [5, 15, 30, 60, 180, 360]" :key="m" :value="m">
+            {{ t('news.refreshOption', {value: m}) }}
+          </option>
+        </select>
+      </label>
+      <label>
         {{ t('news.includeTerms') }}
         <input v-model="includeText" :placeholder="t('news.termsPlaceholder')"/>
         <small class="help">{{ t('news.includeTermsHint') }}</small>

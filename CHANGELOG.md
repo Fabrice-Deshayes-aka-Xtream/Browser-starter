@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- On-disk caches are cleaned at startup: entries of feeds, cities and calendars no longer used by any block are removed, as well as RSS site favicons not refreshed for 30 days.
+- RSS and "Today" blocks: the last loaded feed items and calendar events are cached on disk and shown instantly (also offline) when opening a tab or the browser, then updated once
+  the
+  network request completes. Site favicons of the RSS block are also stored (refreshed weekly).
+- RSS block: the refresh frequency is configurable in the block settings (default 15 minutes).
 - Weather block: the refresh frequency is configurable in the block settings (default 30 minutes), and the date of the last update is displayed.
 - Weather block: the last loaded forecast is cached and shown when offline (including after restarting the browser); it is refreshed whenever the network is available.
 - "Today" block: shows the date, the local time and optional extra clocks for other time zones, and the next N events (default 5) of an iCal calendar URL; each part can be toggled
