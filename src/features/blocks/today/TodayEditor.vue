@@ -1,14 +1,37 @@
 <script setup lang="ts">
 import {computed, ref} from 'vue'
 import {useI18n} from 'vue-i18n'
+import {createId} from '@/core/config/defaults'
 import type {TodayBlockConfig} from '@/core/config/schema'
 
 const props = defineProps<{ config: TodayBlockConfig }>()
 const emit = defineEmits<{ save: [config: TodayBlockConfig]; cancel: [] }>()
 
 const {t} = useI18n()
-const draft = ref<TodayBlockConfig>({...props.config})
+const draft = ref<TodayBlockConfig>({
+  ...props.config,
+  calendars: props.config.calendars.map((c) => ({...c})),
+})
 const zonesText = ref(props.config.timezones.join(', '))
+const newUrl = ref('')
+const newTitle = ref('')
+
+const newUrlValid = computed(() => /^(https?|webcal):\/\/.+/i.test(newUrl.value.trim()))
+
+function addCalendar() {
+  if (!newUrlValid.value) return
+  draft.value.calendars.push({
+    id: createId(),
+    url: newUrl.value.trim(),
+    title: newTitle.value.trim() || undefined,
+  })
+  newUrl.value = ''
+  newTitle.value = ''
+}
+
+function removeCalendar(id: string) {
+  draft.value.calendars = draft.value.calendars.filter((c) => c.id !== id)
+}
 
 const zones = computed(() =>
   zonesText.value
@@ -57,10 +80,35 @@ function save() {
       {{ t('today.showEvents') }}
     </label>
     <template v-if="draft.showEvents">
-      <label>
-        {{ t('today.icalUrl') }}
-        <input v-model="draft.icalUrl" type="url" placeholder="https://…/calendar.ics"/>
-      </label>
+      <ul v-if="draft.calendars.length" class="calendars">
+        <li v-for="calendar in draft.calendars" :key="calendar.id">
+          <span class="url" :title="calendar.url"
+          >{{ calendar.title ? `${calendar.title} – ` : '' }}{{ calendar.url }}</span
+          >
+          <button
+            type="button"
+            :aria-label="t('today.removeCalendar')"
+            @click="removeCalendar(calendar.id)"
+          >
+            ✕
+          </button>
+        </li>
+      </ul>
+      <div class="add">
+        <input
+          v-model="newUrl"
+          :placeholder="t('today.calendarUrl')"
+          @keydown.enter.prevent="addCalendar"
+        />
+        <input
+          v-model="newTitle"
+          :placeholder="t('today.calendarTitle')"
+          @keydown.enter.prevent="addCalendar"
+        />
+        <button type="button" class="btn" :disabled="!newUrlValid" @click="addCalendar">
+          {{ t('today.addCalendar') }}
+        </button>
+      </div>
       <label>
         {{ t('today.eventCount') }}
         <input v-model.number="draft.eventCount" type="number" min="1" max="50"/>
@@ -102,6 +150,44 @@ label.check {
 
 .help {
   opacity: 0.65;
+}
+
+.calendars {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.calendars li {
+  min-width: 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.calendars button {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.url {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.add {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.add input {
+  flex: 1 1 10rem;
 }
 
 .error {

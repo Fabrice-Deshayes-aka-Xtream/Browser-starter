@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- "Today" block: several iCal calendars can be added (custom URLs, with an optional name, like RSS feeds); the next N events are merged across all calendars. Existing single-URL
+  configurations are migrated automatically.
 - On-disk caches are cleaned at startup: entries of feeds, cities and calendars no longer used by any block are removed, as well as RSS site favicons not refreshed for 30 days.
 - RSS and "Today" blocks: the last loaded feed items and calendar events are cached on disk and shown instantly (also offline) when opening a tab or the browser, then updated once
   the

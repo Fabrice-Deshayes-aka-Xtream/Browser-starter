@@ -51,7 +51,7 @@ export const blockDefinitions: BlockDefinition[] = [
       showTime: true,
       timezones: [],
       showEvents: false,
-      icalUrl: '',
+      calendars: [],
       eventCount: 5,
     }),
   },

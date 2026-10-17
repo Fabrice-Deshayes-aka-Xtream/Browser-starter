@@ -51,42 +51,74 @@ const clocks = computed(() =>
 
 const events = ref<CalendarEvent[]>([])
 const loading = ref(false)
-const failed = ref(false)
+const failedCount = ref(0)
 
 const cacheKey = todayKey
 const MAX_EVENTS = 50 // Matches the schema maximum of `eventCount`.
 
+const calendarUrl = (url: string) => url.trim().replace(/^webcal:/i, 'https:')
+const upcoming = (lists: CalendarEvent[][], count: number) =>
+  lists
+    .flat()
+    .filter((e) => e.end > Date.now())
+    .sort((a, b) => a.start - b.start)
+    .slice(0, count)
+
+async function loadCalendar(url: string): Promise<CalendarEvent[] | null> {
+  try {
+    const response = await fetch(url)
+    if (!response.ok) throw new Error(`HTTP ${response.status}`)
+    const all = parseIcal(await response.text(), Date.now(), MAX_EVENTS)
+    await writeStoredJson(cacheKey(url), all)
+    return all
+  } catch {
+    return null
+  }
+}
+
+let refreshId = 0
+
 async function refresh() {
-  const {showEvents, icalUrl, eventCount} = props.block.config
-  const url = icalUrl.trim().replace(/^webcal:/i, 'https:')
-  if (!showEvents || !url) {
+  const id = ++refreshId
+  const {showEvents, calendars, eventCount} = props.block.config
+  const urls = [...new Set(calendars.map((c) => calendarUrl(c.url)).filter(Boolean))]
+  if (!showEvents || !urls.length) {
     events.value = []
-    failed.value = false
+    failedCount.value = 0
     return
   }
   loading.value = true
   if (!events.value.length) {
     // Show the last stored events instantly, dropping those that finished since.
-    const stored = await readStoredJson<CalendarEvent[]>(cacheKey(url))
-    events.value = (stored ?? []).filter((e) => e.end > Date.now()).slice(0, eventCount)
+    const stored = await Promise.all(
+      urls.map(async (url) => (await readStoredJson<CalendarEvent[]>(cacheKey(url))) ?? []),
+    )
+    if (id !== refreshId) return
+    events.value = upcoming(stored, eventCount)
   }
-  try {
-    const response = await fetch(url)
-    if (!response.ok) throw new Error(`HTTP ${response.status}`)
-    const all = parseIcal(await response.text(), Date.now(), MAX_EVENTS)
-    events.value = all.slice(0, eventCount)
-    failed.value = false
-    await writeStoredJson(cacheKey(url), all)
-  } catch {
-    // Keep the stored events when offline.
-    failed.value = !events.value.length
-  } finally {
-    loading.value = false
+  const results = await Promise.all(urls.map(loadCalendar))
+  if (id !== refreshId) return
+  const loaded = results.filter((r): r is CalendarEvent[] => r !== null)
+  if (loaded.length) {
+    // Calendars that failed keep their stored events when offline.
+    const fallback = await Promise.all(
+      urls.map(async (url, i) =>
+        results[i] ?? (await readStoredJson<CalendarEvent[]>(cacheKey(url))) ?? [],
+      ),
+    )
+    if (id !== refreshId) return
+    events.value = upcoming(fallback, eventCount)
   }
+  failedCount.value = results.length - loaded.length
+  loading.value = false
 }
 
 watch(
-  () => [props.block.config.showEvents, props.block.config.icalUrl, props.block.config.eventCount],
+  () => [
+    props.block.config.showEvents,
+    props.block.config.calendars.map((c) => c.url).join('\n'),
+    props.block.config.eventCount,
+  ],
   refresh,
   {immediate: true},
 )
@@ -123,9 +155,9 @@ function eventTime(event: CalendarEvent): string {
       </div>
     </div>
     <div v-if="block.config.showEvents" class="events">
-      <p v-if="!block.config.icalUrl.trim()" class="hint">{{ t('today.noUrl') }}</p>
+      <p v-if="!block.config.calendars.length" class="hint">{{ t('today.noUrl') }}</p>
       <p v-else-if="loading && !events.length" class="hint">{{ t('today.loading') }}</p>
-      <p v-else-if="failed" class="hint">{{ t('today.error') }}</p>
+      <p v-else-if="failedCount && !events.length" class="hint">{{ t('today.error') }}</p>
       <p v-else-if="!events.length" class="hint">{{ t('today.noEvents') }}</p>
       <ul v-else>
         <li v-for="(event, index) in events" :key="`${event.start}-${index}`">
@@ -133,6 +165,9 @@ function eventTime(event: CalendarEvent): string {
           <span class="title">{{ event.title }}</span>
         </li>
       </ul>
+      <p v-if="failedCount && events.length" class="hint">
+        {{ t('today.failed', {count: failedCount}) }}
+      </p>
     </div>
   </div>
 </template>

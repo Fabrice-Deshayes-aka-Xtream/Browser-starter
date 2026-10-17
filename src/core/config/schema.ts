@@ -27,16 +27,34 @@ export const weatherBlockConfigSchema = z.object({
   refreshMinutes: z.number().int().min(5).max(1440).default(30),
 })
 
-export const todayBlockConfigSchema = z.object({
-  showDate: z.boolean().default(true),
-  showTime: z.boolean().default(true),
-  /** IANA time zone names (e.g. `America/New_York`) of the additional clocks. */
-  timezones: z.array(z.string().min(1)).default([]),
-  showEvents: z.boolean().default(false),
-  /** iCal (.ics) calendar URL. */
-  icalUrl: z.string().default(''),
-  eventCount: z.number().int().min(1).max(50).default(5),
-})
+export const todayBlockConfigSchema = z.preprocess(
+  (value) => {
+    if (typeof value !== 'object' || value === null) return value
+    const config = value as Record<string, unknown>
+    // Legacy configs stored a single `icalUrl`.
+    if ('icalUrl' in config) {
+      const {icalUrl, ...rest} = config
+      const url = typeof icalUrl === 'string' ? icalUrl.trim() : ''
+      if (!('calendars' in rest) && url) {
+        return {calendars: [{id: 'legacy-calendar', url}], ...rest}
+      }
+      return rest
+    }
+    return config
+  },
+  z.object({
+    showDate: z.boolean().default(true),
+    showTime: z.boolean().default(true),
+    /** IANA time zone names (e.g. `America/New_York`) of the additional clocks. */
+    timezones: z.array(z.string().min(1)).default([]),
+    showEvents: z.boolean().default(false),
+    /** iCal (.ics) calendars; the next events are merged across all of them. */
+    calendars: z
+      .array(z.object({id, url: z.string().min(1), title: z.string().optional()}))
+      .default([]),
+    eventCount: z.number().int().min(1).max(50).default(5),
+  }),
+)
 
 export const newsBlockConfigSchema = z.preprocess(
   (value) => {

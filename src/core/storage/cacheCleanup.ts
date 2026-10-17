@@ -23,8 +23,8 @@ function usedKeys(config: AppConfig): Set<string> {
     } else if (block.type === 'weather') {
       const {city, forecastDays, unit} = block.config
       if (city) keys.add(weatherKey(city, forecastDays, unit))
-    } else if (block.type === 'today' && block.config.icalUrl.trim()) {
-      keys.add(todayKey(block.config.icalUrl))
+    } else if (block.type === 'today') {
+      for (const calendar of block.config.calendars) keys.add(todayKey(calendar.url))
     }
   }
   return keys
