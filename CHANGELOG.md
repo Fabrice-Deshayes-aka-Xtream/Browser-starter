@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Weather block: larger weather icons in the daily forecast.
+
 ### Added
 
 - "Today" block: several iCal calendars can be added (custom URLs, with an optional name, like RSS feeds); the next N events are merged across all calendars. Existing single-URL

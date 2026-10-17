@@ -158,6 +158,11 @@ onBeforeUnmount(() => clearInterval(timer))
   gap: 0.15rem;
 }
 
+.days .icon {
+  font-size: 1.8rem;
+  line-height: 1.2;
+}
+
 .day {
   text-transform: capitalize;
   font-size: 0.8rem;
