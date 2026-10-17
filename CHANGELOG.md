@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- "Today" block: shows the date, the local time and optional extra clocks for other time zones, and the next N events (default 5) of an iCal calendar URL; each part can be toggled
+  in the block settings.
 - RSS block: choose the number of visible items and the total number of loaded items; a scrollbar shows the rest.
 - RSS block: filter items by title with comma-separated terms, to include only titles containing one of them and/or exclude titles containing one of them; multi-word terms are
   matched as a whole string.

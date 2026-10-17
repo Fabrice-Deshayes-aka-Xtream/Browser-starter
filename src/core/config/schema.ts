@@ -26,6 +26,17 @@ export const weatherBlockConfigSchema = z.object({
   unit: z.enum(['celsius', 'fahrenheit']),
 })
 
+export const todayBlockConfigSchema = z.object({
+  showDate: z.boolean().default(true),
+  showTime: z.boolean().default(true),
+  /** IANA time zone names (e.g. `America/New_York`) of the additional clocks. */
+  timezones: z.array(z.string().min(1)).default([]),
+  showEvents: z.boolean().default(false),
+  /** iCal (.ics) calendar URL. */
+  icalUrl: z.string().default(''),
+  eventCount: z.number().int().min(1).max(50).default(5),
+})
+
 export const newsBlockConfigSchema = z.preprocess(
   (value) => {
     if (typeof value !== 'object' || value === null) return value
@@ -80,6 +91,7 @@ const blockBase = {
 
 export const blockSchema = z.discriminatedUnion('type', [
   z.object({ ...blockBase, type: z.literal('weather'), config: weatherBlockConfigSchema }),
+  z.object({...blockBase, type: z.literal('today'), config: todayBlockConfigSchema}),
   z.object({ ...blockBase, type: z.literal('news'), config: newsBlockConfigSchema }),
   z.object({ ...blockBase, type: z.literal('bookmarks'), config: bookmarksBlockConfigSchema }),
 ])
@@ -122,6 +134,7 @@ export const appConfigSchema = z
 
 export type SearchEngine = z.infer<typeof searchEngineSchema>
 export type WeatherBlockConfig = z.infer<typeof weatherBlockConfigSchema>
+export type TodayBlockConfig = z.infer<typeof todayBlockConfigSchema>
 export type NewsBlockConfig = z.infer<typeof newsBlockConfigSchema>
 export type Bookmark = z.infer<typeof bookmarkSchema>
 export type BookmarksBlockConfig = z.infer<typeof bookmarksBlockConfigSchema>

@@ -6,7 +6,8 @@ Information techniques
 
 Règles de contribution
 - commente le code en anglais, seulement si le code n'est pas explicite
-- quand tu ajoutes une feature, met à jour le CHANGELOG.mc
+- quand tu ajoutes une feature, met à jour le CHANGELOG.md
+- si tu ajoutes un nouveau type de block, documente le dans le README.md
 - quand tu ajoutes ou modifie du code, execute ces commandes pour vérifier que tout va bien et corrige si besoin
   - npm test
   - npm run lint

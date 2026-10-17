@@ -4,6 +4,8 @@ import type {Block, BlockType} from '@/core/config/schema'
 import BookmarksBlock from './bookmarks/BookmarksBlock.vue'
 import NewsBlock from './news/NewsBlock.vue'
 import NewsEditor from './news/NewsEditor.vue'
+import TodayBlock from './today/TodayBlock.vue'
+import TodayEditor from './today/TodayEditor.vue'
 import WeatherBlock from './weather/WeatherBlock.vue'
 import WeatherEditor from './weather/WeatherEditor.vue'
 
@@ -37,6 +39,21 @@ export const blockDefinitions: BlockDefinition[] = [
     editor: WeatherEditor,
     resizable: false,
     createConfig: () => ({ city: null, forecastDays: 5, unit: 'celsius' }),
+  },
+  {
+    type: 'today',
+    i18nKey: 'blocks.today',
+    component: TodayBlock,
+    editor: TodayEditor,
+    resizable: false,
+    createConfig: () => ({
+      showDate: true,
+      showTime: true,
+      timezones: [],
+      showEvents: false,
+      icalUrl: '',
+      eventCount: 5,
+    }),
   },
   {
     type: 'news',

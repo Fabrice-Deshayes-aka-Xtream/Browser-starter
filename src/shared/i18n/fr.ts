@@ -65,6 +65,10 @@ export default {
   },
   blocks: {
     weather: { name: 'Météo', description: 'Météo actuelle et prévisions pour une ville' },
+    today: {
+      name: 'Aujourd\'hui',
+      description: 'Date, horloges et prochains évènements d\'un calendrier'
+    },
     news: { name: 'Flux RSS', description: 'Derniers articles de flux RSS' },
     bookmarks: { name: 'Favoris', description: 'Un groupe de liens favoris avec un titre' },
   },
@@ -111,6 +115,23 @@ export default {
       showers: 'Averses',
       thunder: 'Orage',
     },
+  },
+  today: {
+    showDate: 'Afficher la date',
+    showTime: 'Afficher l\'heure',
+    timezones: 'Horloges supplémentaires (fuseaux horaires séparés par des virgules)',
+    timezonesHint: 'Noms IANA, ex. America/New_York, Asia/Tokyo',
+    invalidTimezones: 'Fuseau(x) horaire(s) inconnu(s) : {list}',
+    showEvents: 'Afficher les prochains évènements du calendrier',
+    icalUrl: 'URL du calendrier iCal (.ics)',
+    eventCount: 'Nombre d\'évènements',
+    noEvents: 'Aucun évènement à venir',
+    noUrl: 'Ajoutez l\'URL d\'un calendrier dans les paramètres du bloc',
+    loading: 'Chargement…',
+    error: 'Calendrier indisponible',
+    allDay: 'Toute la journée',
+    save: 'Enregistrer',
+    cancel: 'Annuler',
   },
   news: {
     noFeeds: 'Ajoutez des flux RSS dans les réglages du bloc',
