@@ -25,6 +25,8 @@ export const weatherBlockConfigSchema = z.object({
   forecastDays: z.number().int().min(1).max(7),
   unit: z.enum(['celsius', 'fahrenheit']),
   refreshMinutes: z.number().int().min(5).max(1440).default(30),
+  showRainHour: z.boolean().default(false),
+  showSunMoon: z.boolean().default(false),
 })
 
 export const todayBlockConfigSchema = z.preprocess(

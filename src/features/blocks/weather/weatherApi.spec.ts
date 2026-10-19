@@ -45,6 +45,41 @@ describe('weather', () => {
     expect(conditionFromCode(96)).toBe('thunder')
   })
 
+  it('parses rain slots and sun times', () => {
+    const data = parseForecast({
+      current: {
+        time: '2026-01-01T10:20',
+        temperature_2m: 1,
+        weather_code: 0,
+        relative_humidity_2m: 60,
+        wind_speed_10m: 1,
+      },
+      daily: {
+        time: ['2026-01-01'],
+        weather_code: [0],
+        temperature_2m_max: [2],
+        temperature_2m_min: [0],
+        sunrise: ['2026-01-01T08:40'],
+        sunset: ['2026-01-01T16:50'],
+      },
+      minutely_15: {
+        time: ['2026-01-01T10:00', '2026-01-01T10:15', '2026-01-01T10:30', '2026-01-01T10:45', '2026-01-01T11:00', '2026-01-01T11:15'],
+        precipitation: [9, 0.2, null, 1, 0.5, 3],
+      },
+    })
+    expect(data.rain).toEqual([
+      {time: '2026-01-01T10:15', precipitation: 0.2},
+      {time: '2026-01-01T10:30', precipitation: 0},
+      {time: '2026-01-01T10:45', precipitation: 1},
+      {time: '2026-01-01T11:00', precipitation: 0.5},
+    ])
+    expect(data.sun).toEqual({
+      date: '2026-01-01',
+      sunrise: '2026-01-01T08:40',
+      sunset: '2026-01-01T16:50'
+    })
+  })
+
   it('parses an Open-Meteo forecast response', () => {
     const data = parseForecast({
       current: {

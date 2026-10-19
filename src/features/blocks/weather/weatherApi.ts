@@ -8,6 +8,17 @@ type City = NonNullable<WeatherBlockConfig['city']>
 export interface WeatherData {
   current: { temperature: number; condition: WeatherCondition; humidity: number; wind: number }
   days: Array<{ date: string; condition: WeatherCondition; min: number; max: number }>
+  /** Next 15-minute slots (city local time, `YYYY-MM-DDTHH:mm`) with precipitation in mm. */
+  rain?: Array<{ time: string; precipitation: number }>
+  /** Today's sunrise and sunset (city local time, `YYYY-MM-DDTHH:mm`) and date (`YYYY-MM-DD`). */
+  sun?: { date: string; sunrise: string; sunset: string }
+}
+
+export const RAIN_SLOTS = 4
+
+export interface WeatherOptions {
+  rain?: boolean
+  sun?: boolean
 }
 
 export interface CachedWeather {
@@ -18,6 +29,7 @@ export interface CachedWeather {
 
 interface ForecastResponse {
   current: {
+    time?: string
     temperature_2m: number
     weather_code: number
     relative_humidity_2m: number
@@ -28,6 +40,12 @@ interface ForecastResponse {
     weather_code: number[]
     temperature_2m_max: number[]
     temperature_2m_min: number[]
+    sunrise?: string[]
+    sunset?: string[]
+  }
+  minutely_15?: {
+    time: string[]
+    precipitation: Array<number | null>
   }
 }
 
@@ -62,7 +80,30 @@ export async function searchCities(query: string, language: string): Promise<Cit
   }))
 }
 
+function parseRain(data: ForecastResponse): WeatherData['rain'] {
+  const minutely = data.minutely_15
+  if (!minutely || !data.current.time) return undefined
+  // Slots are labeled by their start: keep the one containing "now" and the following ones.
+  const now = data.current.time
+  const slotStart = `${now.slice(0, 14)}${String(Math.floor(Number(now.slice(14, 16)) / 15) * 15).padStart(2, '0')}`
+  const first = minutely.time.findIndex((time) => time >= slotStart)
+  if (first < 0) return undefined
+  return minutely.time.slice(first, first + RAIN_SLOTS).map((time, i) => ({
+    time,
+    precipitation: minutely.precipitation[first + i] ?? 0,
+  }))
+}
+
+function parseSun(data: ForecastResponse): WeatherData['sun'] {
+  const sunrise = data.daily.sunrise?.[0]
+  const sunset = data.daily.sunset?.[0]
+  const date = data.daily.time[0]
+  return sunrise && sunset && date ? {date, sunrise, sunset} : undefined
+}
+
 export function parseForecast(data: ForecastResponse): WeatherData {
+  const rain = parseRain(data)
+  const sun = parseSun(data)
   return {
     current: {
       temperature: data.current.temperature_2m,
@@ -76,6 +117,8 @@ export function parseForecast(data: ForecastResponse): WeatherData {
       min: data.daily.temperature_2m_min[i]!,
       max: data.daily.temperature_2m_max[i]!,
     })),
+    ...(rain && {rain}),
+    ...(sun && {sun}),
   }
 }
 
@@ -113,17 +156,23 @@ export async function fetchWeather(
   city: City,
   forecastDays: number,
   unit: WeatherBlockConfig['unit'],
+  options: WeatherOptions = {},
 ): Promise<CachedWeather> {
   const url = new URL(FORECAST_URL)
-  url.search = new URLSearchParams({
+  const params: Record<string, string> = {
     latitude: String(city.latitude),
     longitude: String(city.longitude),
     current: 'temperature_2m,weather_code,relative_humidity_2m,wind_speed_10m',
-    daily: 'weather_code,temperature_2m_max,temperature_2m_min',
+    daily: `weather_code,temperature_2m_max,temperature_2m_min${options.sun ? ',sunrise,sunset' : ''}`,
     forecast_days: String(forecastDays + 1),
     temperature_unit: unit,
     timezone: 'auto',
-  }).toString()
+  }
+  if (options.rain) {
+    params.minutely_15 = 'precipitation'
+    params.forecast_minutely_15 = '96'
+  }
+  url.search = new URLSearchParams(params).toString()
   const data = parseForecast(await getJson<ForecastResponse>(url))
   // The first daily entry is today: forecasts start tomorrow.
   const result = {time: Date.now(), data: {...data, days: data.days.slice(1)}}

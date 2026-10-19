@@ -67,6 +67,14 @@ function pick(city: NonNullable<WeatherBlockConfig['city']>) {
         </option>
       </select>
     </label>
+    <label class="check">
+      <input v-model="draft.showRainHour" type="checkbox"/>
+      {{ t('weather.showRainHour') }}
+    </label>
+    <label class="check">
+      <input v-model="draft.showSunMoon" type="checkbox"/>
+      {{ t('weather.showSunMoon') }}
+    </label>
     <div class="actions">
       <button type="submit" class="btn primary">{{ t('weather.save') }}</button>
       <button type="button" class="btn" @click="emit('cancel')">{{ t('weather.cancel') }}</button>
@@ -101,6 +109,12 @@ label {
 .current {
   margin: 0;
   font-weight: 600;
+}
+
+.check {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .error {
