@@ -22,9 +22,10 @@ export const weatherBlockConfigSchema = z.object({
       longitude: z.number().min(-180).max(180),
     })
     .nullable(),
-  forecastDays: z.number().int().min(1).max(7),
+  /** Follow the browser position; city is then only the fallback. */
+  useLocation: z.boolean().default(false),
   unit: z.enum(['celsius', 'fahrenheit']),
-  refreshMinutes: z.number().int().min(5).max(1440).default(30),
+  refreshMinutes: z.number().int().min(5).max(1440).default(15),
   showRainHour: z.boolean().default(false),
   showSunMoon: z.boolean().default(false),
 })

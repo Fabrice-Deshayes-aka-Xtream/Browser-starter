@@ -8,9 +8,11 @@ export const newsKey = (url: string, title?: string) => `${NEWS_PREFIX}${url}|${
 
 export const weatherKey = (
   city: { latitude: number; longitude: number },
-  forecastDays: number,
   unit: string,
-) => `${WEATHER_PREFIX}${city.latitude},${city.longitude},${forecastDays},${unit}`
+) => `${WEATHER_PREFIX}${city.latitude},${city.longitude},${unit}`
+
+/** Last position found for blocks following the user's location (not under WEATHER_PREFIX: not pruned). */
+export const WEATHER_LOCATION_KEY = 'browser-starter.weatherLocation'
 
 export const todayKey = (icalUrl: string) =>
   `${TODAY_PREFIX}${icalUrl.trim().replace(/^webcal:/i, 'https:')}`

@@ -1,5 +1,5 @@
 import {afterEach, describe, expect, it, vi} from 'vitest'
-import {fetchWeather, parseForecast, readCachedWeather} from './weatherApi'
+import {cityAt, fetchWeather, parseForecast, readCachedWeather} from './weatherApi'
 import {conditionFromCode} from './weatherCodes'
 
 describe('weather', () => {
@@ -12,7 +12,7 @@ describe('weather', () => {
       setItem: (k: string, v: string) => void store.set(k, v),
     })
     const city = {name: 'Paris', latitude: 48.8, longitude: 2.3}
-    expect(await readCachedWeather(city, 1, 'celsius')).toBeUndefined()
+    expect(await readCachedWeather(city, 'celsius')).toBeUndefined()
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue({
@@ -33,9 +33,27 @@ describe('weather', () => {
         }),
       }),
     )
-    const fresh = await fetchWeather(city, 1, 'celsius')
-    expect(await readCachedWeather(city, 1, 'celsius')).toEqual(fresh)
+    const fresh = await fetchWeather(city, 'celsius')
+    expect(await readCachedWeather(city, 'celsius')).toEqual(fresh)
     expect(fresh.time).toBeGreaterThan(0)
+  })
+
+  it('names a position, falling back to coordinates', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({address: {town: 'Cabourg', country: 'France'}}),
+      }),
+    )
+    expect(await cityAt(49.2871, -0.1215, 'fr')).toEqual({
+      name: 'Cabourg',
+      country: 'France',
+      latitude: 49.29,
+      longitude: -0.12,
+    })
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('offline')))
+    expect((await cityAt(49.2871, -0.1215, 'fr')).name).toBe('49.29, -0.12')
   })
 
   it('maps WMO codes to conditions', () => {
@@ -84,9 +102,11 @@ describe('weather', () => {
     const data = parseForecast({
       current: {
         temperature_2m: 18.4,
+        apparent_temperature: 16.2,
         weather_code: 2,
         relative_humidity_2m: 60,
         wind_speed_10m: 12,
+        wind_direction_10m: 225,
       },
       daily: {
         time: ['2026-01-01', '2026-01-02'],
@@ -95,7 +115,14 @@ describe('weather', () => {
         temperature_2m_min: [10, 8],
       },
     })
-    expect(data.current).toEqual({ temperature: 18.4, condition: 'partly', humidity: 60, wind: 12 })
+    expect(data.current).toEqual({
+      temperature: 18.4,
+      feelsLike: 16.2,
+      condition: 'partly',
+      humidity: 60,
+      wind: 12,
+      windDirection: 225,
+    })
     expect(data.days[1]).toEqual({ date: '2026-01-02', condition: 'rain', min: 8, max: 15 })
   })
 })

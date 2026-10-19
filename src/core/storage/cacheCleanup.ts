@@ -5,6 +5,7 @@ import {
   newsKey,
   TODAY_PREFIX,
   todayKey,
+  WEATHER_LOCATION_KEY,
   WEATHER_PREFIX,
   weatherKey,
 } from './cacheKeys'
@@ -14,15 +15,23 @@ const FAVICON_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000
 const CONFIG_BOUND_PREFIXES = [NEWS_PREFIX, WEATHER_PREFIX, TODAY_PREFIX]
 
 /** Cache keys still referenced by a block of any workspace. */
-function usedKeys(config: AppConfig): Set<string> {
+async function usedKeys(config: AppConfig): Promise<Set<string>> {
   const keys = new Set<string>()
   const blocks = config.workspaces.flatMap((w) => w.layout.columns.flatMap((c) => c.blocks))
   for (const block of blocks) {
     if (block.type === 'news') {
       for (const feed of block.config.feeds) keys.add(newsKey(feed.url, feed.title))
     } else if (block.type === 'weather') {
-      const {city, forecastDays, unit} = block.config
-      if (city) keys.add(weatherKey(city, forecastDays, unit))
+      const {city, unit, useLocation} = block.config
+      if (city) keys.add(weatherKey(city, unit))
+      if (useLocation) {
+        try {
+          const located = JSON.parse((await getStorageAdapter().get(WEATHER_LOCATION_KEY)) ?? 'null')
+          if (located) keys.add(weatherKey(located, unit))
+        } catch {
+          // No usable last position: nothing to keep.
+        }
+      }
     } else if (block.type === 'today') {
       for (const calendar of block.config.calendars) keys.add(todayKey(calendar.url))
     }
@@ -37,7 +46,7 @@ function usedKeys(config: AppConfig): Set<string> {
 export async function pruneCache(config: AppConfig, now = Date.now()): Promise<void> {
   try {
     const storage = getStorageAdapter()
-    const used = usedKeys(config)
+    const used = await usedKeys(config)
     for (const key of await storage.keys()) {
       if (key.startsWith(FAVICON_PREFIX)) {
         let time = 0

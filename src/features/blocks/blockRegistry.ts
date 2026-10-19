@@ -40,9 +40,9 @@ export const blockDefinitions: BlockDefinition[] = [
     resizable: false,
     createConfig: () => ({
       city: null,
-      forecastDays: 5,
+      useLocation: true,
       unit: 'celsius',
-      refreshMinutes: 30,
+      refreshMinutes: 15,
       showRainHour: false,
       showSunMoon: false,
     }),

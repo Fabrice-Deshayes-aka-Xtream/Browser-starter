@@ -11,8 +11,10 @@ Open source, MIT license. See [PRIVACY.md](PRIVACY.md) for details.
 - **Customizable layout** – any number of columns (1–8), resizable widths, blocks you can reorder, move between columns. View mode by default, edit mode on demand.
 - **Blocks**
   - *Bookmarks*: titled groups of links, automatic favicon or your own uploaded icon, drag to reorder.
-  - *Weather*: current conditions and forecast for a city ([Open-Meteo](https://open-meteo.com/), no API key). Optional (block settings): rain in the next hour (4 × 15 min grid,
-    colored by intensity) and sunrise/sunset with the moon phase.
+  - *Weather*: current conditions and forecast for a city ([Open-Meteo](https://open-meteo.com/), no API key). Optional (block settings): use the browser position (asks for
+    permission; the place is named with [OpenStreetMap Nominatim](https://nominatim.openstreetmap.org/), the chosen city being the fallback), rain in the next hour (4 × 15 min
+    grid,
+    colored by intensity) and sunrise/sunset (as a sentence) with the moon phase.
   - *News*: mix several RSS/Atom feeds of your choice in a single merged view, choose how many items to display, with thumbnails, favicons or nothing. Add feeds from predefined lists per language (French, English) grouped by category (news, science, technology, business, sports, culture), or add a custom feed by URL and name.
 - **Workspaces** – create as many workspaces as you like, each with its own layout and blocks, e.g. one start page for home and another for work.
 - **Backup** – export/import each workspace as JSON.
@@ -73,7 +75,17 @@ Requires Node.js `^22.18` or `>=24.12`. See [CONTRIBUTING.md](CONTRIBUTING.md) a
 
 ## Stack
 
-Vue 3, TypeScript, Vite, Pinia, Zod, vue-i18n, SortableJS, Vitest, Playwright.
+Vue 3, TypeScript, Vite, Pinia, Zod, vue-i18n, VueUse, SortableJS, Simple Icons, tldts, Vitest, Playwright.
+
+## Open source components and services
+
+- [Vue](https://vuejs.org), [Pinia](https://pinia.vuejs.org), [Vue I18n](https://vue-i18n.intlify.dev), [VueUse](https://vueuse.org)
+- [Zod](https://zod.dev): schema validation
+- [SortableJS](https://sortablejs.github.io/Sortable): drag and drop
+- [Simple Icons](https://simpleicons.org): brand logos
+- [tldts](https://github.com/remusao/tldts): domain name parsing
+- [Open-Meteo](https://open-meteo.com): weather and geocoding API (no API key)
+- [OpenStreetMap Nominatim](https://nominatim.openstreetmap.org): reverse geocoding of the browser position
 
 ## License
 

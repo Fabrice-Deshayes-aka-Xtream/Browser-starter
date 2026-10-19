@@ -5,12 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.3.0] - 2026-10-20
+
+### Changed
+
+- Weather block: the current conditions now also show the feels-like temperature next to the actual one.
+- Weather block: the number of forecast days is no longer a setting; as many days as fit the block width are shown (up to 15).
 
 ### Added
 
-- Weather block: optional "rain in the next hour" grid (4 × 15 min, colored by rain intensity with a legend) and optional sunrise/sunset times with the moon phase, both enabled
+- Weather block: option to follow the browser position (with the chosen city as fallback), the place being named with OpenStreetMap Nominatim. Adds the `geolocation` permission.
+- Weather block: "rain in the next hour" grid (4 × 15 min, colored by rain intensity with a legend) and sunrise/sunset times with the moon phase, both enabled
   in the block settings.
+- Weather block: the wind is shown with its direction.
 
 ## [1.2.0] - 2026-10-17
 

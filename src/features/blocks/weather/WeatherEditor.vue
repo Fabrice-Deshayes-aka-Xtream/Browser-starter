@@ -33,7 +33,17 @@ function pick(city: NonNullable<WeatherBlockConfig['city']>) {
 
 <template>
   <form class="form" @submit.prevent="emit('save', draft)">
-    <p v-if="draft.city" class="current">{{ draft.city.name }} ({{ draft.city.country }})</p>
+    <label class="check">
+      <input v-model="draft.useLocation" type="checkbox"/>
+      {{ t('weather.useLocation') }}
+    </label>
+    <p v-if="draft.city" class="current">
+      {{
+        draft.useLocation
+          ? t('weather.fallbackCity', {name: draft.city.name})
+          : `${draft.city.name} (${draft.city.country})`
+      }}
+    </p>
     <div class="search">
       <input
         v-model="query"
@@ -48,10 +58,6 @@ function pick(city: NonNullable<WeatherBlockConfig['city']>) {
         <button type="button" @click="pick(city)">{{ city.name }}, {{ city.country }}</button>
       </li>
     </ul>
-    <label>
-      {{ t('weather.forecastDays') }}
-      <input v-model.number="draft.forecastDays" type="number" min="1" max="7" />
-    </label>
     <label>
       {{ t('weather.unit') }}
       <select v-model="draft.unit">

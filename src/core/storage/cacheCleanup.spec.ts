@@ -60,7 +60,7 @@ describe('pruneCache', () => {
     store.set('browser-starter.config', '{}')
     store.set(newsKey('https://a.test/rss'), '[]')
     store.set(newsKey('https://removed.test/rss'), '[]')
-    store.set(weatherKey(city, 5, 'celsius'), '{}')
+    store.set(weatherKey(city, 'celsius'), '{}')
     store.set(todayKey('https://cal.test/x.ics'), '[]')
     store.set(faviconKey('https://fresh.test'), JSON.stringify({icon: 'x', time: now - DAY}))
     store.set(faviconKey('https://old.test'), JSON.stringify({icon: 'x', time: now - 40 * DAY}))

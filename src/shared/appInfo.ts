@@ -1,4 +1,4 @@
-import { version } from '../../package.json'
+import {version} from '../../package.json'
 
 export const REPOSITORY_URL = 'https://github.com/Fabrice-Deshayes-aka-Xtream/Browser-starter'
 
@@ -24,5 +24,11 @@ export const OPEN_SOURCE_COMPONENTS = [
   },
   { name: 'VueUse', description: 'Vue composition utilities', url: 'https://vueuse.org' },
   { name: 'Simple Icons', description: 'Brand logos', url: 'https://simpleicons.org' },
+  {name: 'tldts', description: 'Domain name parsing', url: 'https://github.com/remusao/tldts'},
   { name: 'Open-Meteo', description: 'Free weather API', url: 'https://open-meteo.com' },
+  {
+    name: 'OpenStreetMap Nominatim',
+    description: 'Reverse geocoding',
+    url: 'https://nominatim.openstreetmap.org',
+  },
 ]
