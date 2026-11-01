@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [unrelease]
+
+### Changed
+
+- Minimum required Node.js version is now 24.19.2 (`engines` in `package.json`, enforced through `engine-strict` in `.npmrc`).
+- Updated dependencies:
+    - `pinia` 4.0.3 → 4.1.0
+    - `simple-icons` 16.34.0 → 16.36.0
+    - `tldts` 7.4.18 → 7.4.19
+    - `vue` 3.5.43 → 3.5.44
+    - `vue-i18n` 11.4.14 → 11.4.17
+    - `@playwright/test` 1.64.0 → 1.64.1 (dev)
+    - `@types/chrome` 0.3.5 → 0.3.7 (dev)
+    - `eslint-plugin-oxlint` 1.82.0 → 1.90.0 (dev)
+    - `eslint-plugin-vue` 10.11.1 → 10.12.0 (dev)
+    - `jsdom` 30.1.2 → 30.1.3 (dev)
+    - `npm-run-all2` 9.0.3 → 9.0.4 (dev)
+    - `oxlint` 1.82.0 → 1.90.0 (dev)
+    - `prettier` 3.9.6 → 3.9.10 (dev)
+    - `vite` 8.3.4 → 8.3.5 (dev)
+    - `vitest` 4.1.12 → 5.0.5 (dev)
+    - `vue-tsc` 3.3.13 → 3.3.14 (dev)
+
 ## [1.3.1] - 2026-11-01
 
 ### Added

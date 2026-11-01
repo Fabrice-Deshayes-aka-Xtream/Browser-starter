@@ -73,7 +73,7 @@ npm run type-check
 npm run build:extension
 ```
 
-Requires Node.js `^22.18` or `>=24.12`. See [CONTRIBUTING.md](CONTRIBUTING.md) and [PRIVACY.md](PRIVACY.md).
+Requires Node.js `>=24.19.2`. See [CONTRIBUTING.md](CONTRIBUTING.md) and [PRIVACY.md](PRIVACY.md).
 
 ## Stack
 
