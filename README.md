@@ -18,6 +18,8 @@ Open source, MIT license. See [PRIVACY.md](PRIVACY.md) for details.
   - *News*: mix several RSS/Atom feeds of your choice in a single merged view, choose how many items to display, with thumbnails, favicons or nothing. Add feeds from predefined lists per language (French, English) grouped by category (news, science, technology, business, sports, culture), or add a custom feed by URL and name.
 - **Workspaces** – create as many workspaces as you like, each with its own layout and blocks, e.g. one start page for home and another for work.
 - **Backup** – export/import each workspace as JSON.
+- **Local cache** – to speed up the page display, avoid useless requests and allow offline display, all data coming from the internet (RSS feeds, weather, calendar...) is cached
+  locally until its next refresh.
 - Light, dark or automatic theme; English and French.
 
 ## Screenshots
