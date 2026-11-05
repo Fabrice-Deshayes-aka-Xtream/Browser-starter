@@ -8,8 +8,8 @@ import {type CalendarEvent, parseIcal} from './icalParser'
 
 const props = defineProps<{ block: Extract<Block, { type: 'today' }> }>()
 
-const CLOCK_MS = 15_000
-const REFRESH_MS = 15 * 60 * 1000
+const CLOCK_MS = 1_000
+const REFRESH_MS = 5 * 60 * 1000
 const {t, locale} = useI18n()
 
 const now = ref(Date.now())
