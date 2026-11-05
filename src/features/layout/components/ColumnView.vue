@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import {onBeforeUnmount, onMounted, ref, watch} from 'vue'
 import Sortable from 'sortablejs'
-import type { Column } from '@/core/config/schema'
-import { useEditMode } from '@/shared/composables/useEditMode'
-import { useLayout } from '../useLayout'
-import { copiedBlock } from '../useClipboard'
+import type {Column} from '@/core/config/schema'
+import {useEditMode} from '@/shared/composables/useEditMode'
+import {useLayout} from '../useLayout'
+import {copiedBlock} from '../useClipboard'
+import {columnMinWidth} from '@/features/blocks/blockRegistry'
 import BlockFrame from './BlockFrame.vue'
 
 defineProps<{ column: Column; removable: boolean }>()
@@ -35,7 +36,10 @@ onBeforeUnmount(() => sortable?.destroy())
 </script>
 
 <template>
-  <div class="column" :style="{ flex: `${column.width} 1 0` }">
+  <div
+    class="column"
+    :style="{ flex: `${column.width} 1 0`, minWidth: `${columnMinWidth(column)}px` }"
+  >
     <div v-if="editing" class="column-tools">
       <span class="column-handle" :title="$t('layout.moveColumn')">⠿</span>
       <span class="column-actions">
@@ -79,7 +83,6 @@ onBeforeUnmount(() => sortable?.destroy())
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  min-width: 0;
 }
 
 .blocks {

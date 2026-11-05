@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Bookmarks, weather and today blocks now have a minimum width of 250px, and news blocks 350px: columns containing them can no longer be shrunk below it, by resizing a column or
+  the window.
+
+### Changed
+
+- Today block: the clock now refreshes every second (was 15 s) and calendar events every 5 minutes (was 15 minutes).
+
 ## [1.3.2] - 2026-11-01
 
 ### Changed
@@ -37,11 +48,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.3.0] - 2026-10-20
 
-### Changed
-
-- Weather block: the current conditions now also show the feels-like temperature next to the actual one.
-- Weather block: the number of forecast days is no longer a setting; as many days as fit the block width are shown (up to 15).
-
 ### Added
 
 - Weather block: option to follow the browser position (with the chosen city as fallback), the place being named with OpenStreetMap Nominatim. Adds the `geolocation` permission.
@@ -49,11 +55,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   in the block settings.
 - Weather block: the wind is shown with its direction.
 
-## [1.2.0] - 2026-10-17
-
 ### Changed
 
-- Weather block: larger weather icons in the daily forecast.
+- Weather block: the current conditions now also show the feels-like temperature next to the actual one.
+- Weather block: the number of forecast days is no longer a setting; as many days as fit the block width are shown (up to 15).
+
+## [1.2.0] - 2026-10-17
 
 ### Added
 
@@ -71,6 +78,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - RSS block: choose the number of visible items and the total number of loaded items; a scrollbar shows the rest.
 - RSS block: filter items by title with comma-separated terms, to include only titles containing one of them and/or exclude titles containing one of them; multi-word terms are
   matched as a whole string.
+
+### Changed
+
+- Weather block: larger weather icons in the daily forecast.
 
 ## [1.1.0] - 2026-10-15
 

@@ -1,6 +1,6 @@
 import type {Component} from 'vue'
 import {createId} from '@/core/config/defaults'
-import type {Block, BlockType} from '@/core/config/schema'
+import type {Block, BlockType, Column} from '@/core/config/schema'
 import BookmarksBlock from './bookmarks/BookmarksBlock.vue'
 import NewsBlock from './news/NewsBlock.vue'
 import NewsEditor from './news/NewsEditor.vue'
@@ -21,6 +21,8 @@ export interface BlockDefinition {
   editorWidth?: string
   /** Whether the user can set a fixed height; otherwise the block fits its content. */
   resizable: boolean
+  /** Minimum width in px of a column containing this block. */
+  minWidth?: number
   createConfig: () => Block['config']
 }
 
@@ -30,6 +32,7 @@ export const blockDefinitions: BlockDefinition[] = [
     i18nKey: 'blocks.bookmarks',
     component: BookmarksBlock,
     resizable: false,
+    minWidth: 250,
     createConfig: () => ({ title: '', display: 'list', tileSize: 'normal', links: [] }),
   },
   {
@@ -38,6 +41,7 @@ export const blockDefinitions: BlockDefinition[] = [
     component: WeatherBlock,
     editor: WeatherEditor,
     resizable: false,
+    minWidth: 250,
     createConfig: () => ({
       city: null,
       useLocation: true,
@@ -53,6 +57,7 @@ export const blockDefinitions: BlockDefinition[] = [
     component: TodayBlock,
     editor: TodayEditor,
     resizable: false,
+    minWidth: 250,
     createConfig: () => ({
       showDate: true,
       showTime: true,
@@ -69,6 +74,7 @@ export const blockDefinitions: BlockDefinition[] = [
     editor: NewsEditor,
     editorWidth: '52rem',
     resizable: false,
+    minWidth: 350,
     createConfig: () => ({
       title: '',
       feeds: [],
@@ -84,6 +90,11 @@ export const blockDefinitions: BlockDefinition[] = [
 
 export function getBlockDefinition(type: BlockType): BlockDefinition {
   return blockDefinitions.find((d) => d.type === type)!
+}
+
+/** Minimum width in px of a column: the largest minimum among its blocks. */
+export function columnMinWidth(column: Column): number {
+  return Math.max(0, ...column.blocks.map((b) => getBlockDefinition(b.type).minWidth ?? 0))
 }
 
 export function createBlock(type: BlockType): Block {

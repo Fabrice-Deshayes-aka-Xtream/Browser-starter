@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import {computed, onBeforeUnmount, onMounted, ref, watch} from 'vue'
 import Sortable from 'sortablejs'
-import type { BlockType, Column } from '@/core/config/schema'
-import { resizeColumns } from '../layoutOperations'
-import { useEditMode } from '@/shared/composables/useEditMode'
-import { useLayout } from '../useLayout'
-import { newBlockId } from '../useNewBlock'
-import { getBlockDefinition } from '@/features/blocks/blockRegistry'
+import type {BlockType, Column} from '@/core/config/schema'
+import {resizeColumns} from '../layoutOperations'
+import {useEditMode} from '@/shared/composables/useEditMode'
+import {useLayout} from '../useLayout'
+import {newBlockId} from '../useNewBlock'
+import {columnMinWidth, getBlockDefinition} from '@/features/blocks/blockRegistry'
 import BlockPicker from './BlockPicker.vue'
 import ColumnResizer from './ColumnResizer.vue'
 import ColumnView from './ColumnView.vue'
@@ -20,6 +20,7 @@ const frame = ref<HTMLElement>()
 const pickerColumnId = ref<string | null>(null)
 let snapshot: Column[] = []
 let startMargin = 0
+let startWidths: number[] = []
 
 const MAX_MARGIN_PERCENT = 30
 
@@ -44,7 +45,20 @@ function onEdgeMove(side: 'left' | 'right', dx: number) {
   layout.setMargin(Math.round(value * 10) / 10)
 }
 
-function onResizeMove(index: number, dx: number) {
+function startResize() {
+  takeSnapshot()
+  startWidths = Array.from(grid.value!.querySelectorAll<HTMLElement>(':scope > .column')).map(
+    (el) => el.getBoundingClientRect().width,
+  )
+}
+
+function onResizeMove(index: number, rawDx: number) {
+  const leftWidth = startWidths[index] ?? 0
+  const rightWidth = startWidths[index + 1] ?? 0
+  const dx = Math.min(
+    Math.max(rawDx, columnMinWidth(snapshot[index]!) - leftWidth),
+    rightWidth - columnMinWidth(snapshot[index + 1]!),
+  )
   const totalWeight = snapshot.reduce((sum, c) => sum + c.width, 0)
   const delta = (dx / (grid.value?.clientWidth || 1)) * totalWeight
   layout.setColumns(resizeColumns(snapshot, index, delta))
@@ -100,7 +114,7 @@ onBeforeUnmount(() => sortable?.destroy())
       <template v-for="(column, index) in layout.columns.value" :key="column.id">
         <ColumnResizer
           v-if="editing && index > 0"
-          @start="takeSnapshot"
+          @start="startResize"
           @move="onResizeMove(index - 1, $event)"
         />
         <ColumnView
