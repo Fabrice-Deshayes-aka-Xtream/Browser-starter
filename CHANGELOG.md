@@ -16,6 +16,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Today block: the clock now refreshes every second (was 15 s) and calendar events every 5 minutes (was 15 minutes).
+- switch to Node.js 26.13.0 as the minimum required version (in `engines` of `package.json`, enforced through `engine-strict` in `.npmrc`).
+- Updated dependencies:
+    - `vue` 3.5.44 → 3.5.45
+    - `vue-i18n` 11.4.17 → 11.4.18
+    - `@playwright/test` 1.64.1 → 1.65.0 (dev)
+    - `@types/node` 24.19.2 → 26.6.6 (dev)
+    - `eslint-plugin-playwright` 2.12.1 → 2.12.2 (dev)
+    - `jsdom` 30.1.3 → 31.0.0 (dev)
+    - `vite` 8.3.5 → 8.3.6 (dev)
+    - `vitest` 5.0.5 → 5.1.0 (dev)
 
 ## [1.3.2] - 2026-11-01
 
