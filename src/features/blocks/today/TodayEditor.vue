@@ -79,6 +79,10 @@ function save() {
       <input v-model="draft.showEvents" type="checkbox"/>
       {{ t('today.showEvents') }}
     </label>
+    <label v-if="draft.showEvents" class="check">
+      <input v-model="draft.showEventIcons" type="checkbox"/>
+      {{ t('today.showEventIcons') }}
+    </label>
     <template v-if="draft.showEvents">
       <ul v-if="draft.calendars.length" class="calendars">
         <li v-for="calendar in draft.calendars" :key="calendar.id">

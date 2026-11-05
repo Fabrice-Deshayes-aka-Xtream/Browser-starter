@@ -50,6 +50,7 @@ describe('pruneCache', () => {
           showTime: true,
           timezones: [],
           showEvents: true,
+          showEventIcons: true,
           calendars: [{id: 'c', url: 'webcal://cal.test/x.ics'}],
           eventCount: 5,
         },

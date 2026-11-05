@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Bookmarks, weather and today blocks now have a minimum width of 250px, and news blocks 350px: columns containing them can no longer be shrunk below it, by resizing a column or
   the window.
+- Today block: events get an emoji picked from French/English keywords in their title (option "icon for each event").
 
 ### Changed
 

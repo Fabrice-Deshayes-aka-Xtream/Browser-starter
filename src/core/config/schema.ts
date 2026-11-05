@@ -51,6 +51,8 @@ export const todayBlockConfigSchema = z.preprocess(
     /** IANA time zone names (e.g. `America/New_York`) of the additional clocks. */
     timezones: z.array(z.string().min(1)).default([]),
     showEvents: z.boolean().default(false),
+    /** Emoji and calendar color marker on each event. */
+    showEventIcons: z.boolean().default(true),
     /** iCal (.ics) calendars; the next events are merged across all of them. */
     calendars: z
       .array(z.object({id, url: z.string().min(1), title: z.string().optional()}))

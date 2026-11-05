@@ -63,6 +63,7 @@ export const blockDefinitions: BlockDefinition[] = [
       showTime: true,
       timezones: [],
       showEvents: false,
+      showEventIcons: true,
       calendars: [],
       eventCount: 5,
     }),

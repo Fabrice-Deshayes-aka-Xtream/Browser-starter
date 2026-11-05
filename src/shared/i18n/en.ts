@@ -146,6 +146,7 @@ export default {
     timezones: 'Additional clocks (comma-separated time zones)',
     timezonesHint: 'IANA names, e.g. America/New_York, Asia/Tokyo',
     invalidTimezones: 'Unknown time zone(s): {list}',
+    showEventIcons: 'Show an icon for each event',
     showEvents: 'Show upcoming calendar events',
     calendarUrl: 'iCal calendar URL (.ics)',
     calendarTitle: 'Name (optional)',

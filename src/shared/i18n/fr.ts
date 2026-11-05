@@ -150,6 +150,7 @@ export default {
     timezones: 'Horloges supplémentaires (fuseaux horaires séparés par des virgules)',
     timezonesHint: 'Noms IANA, ex. America/New_York, Asia/Tokyo',
     invalidTimezones: 'Fuseau(x) horaire(s) inconnu(s) : {list}',
+    showEventIcons: 'Afficher une icône par évènement',
     showEvents: 'Afficher les prochains évènements du calendrier',
     calendarUrl: 'URL du calendrier iCal (.ics)',
     calendarTitle: 'Nom (facultatif)',

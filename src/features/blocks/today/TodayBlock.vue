@@ -5,6 +5,7 @@ import type {Block} from '@/core/config/schema'
 import {readStoredJson, writeStoredJson} from '@/core/storage/jsonCache'
 import {todayKey} from '@/core/storage/cacheKeys'
 import {type CalendarEvent, parseIcal} from './icalParser'
+import {eventIcon} from './eventIcon'
 
 const props = defineProps<{ block: Extract<Block, { type: 'today' }> }>()
 
@@ -161,8 +162,11 @@ function eventTime(event: CalendarEvent): string {
       <p v-else-if="!events.length" class="hint">{{ t('today.noEvents') }}</p>
       <ul v-else>
         <li v-for="(event, index) in events" :key="`${event.start}-${index}`">
-          <span class="when">{{ eventDay(event) }} · {{ eventTime(event) }}</span>
-          <span class="title">{{ event.title }}</span>
+          <span v-if="block.config.showEventIcons" class="icon">{{ eventIcon(event.title) }}</span>
+          <span class="text">
+            <span class="when">{{ eventDay(event) }} · {{ eventTime(event) }}</span>
+            <span class="title">{{ event.title }}</span>
+          </span>
         </li>
       </ul>
       <p v-if="failedCount && events.length" class="hint">
@@ -229,8 +233,20 @@ function eventTime(event: CalendarEvent): string {
 
 .events li {
   display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.events .text {
+  display: flex;
   flex-direction: column;
   min-width: 0;
+}
+
+.icon {
+  font-size: 1.8em;
+  line-height: 1;
 }
 
 .events .title {
