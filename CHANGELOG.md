@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.4] - 2026-11-09
+
+### Changed
+
+- Updated dependencies:
+    - `simple-icons` 16.36.0 → 16.37.0
+    - `oxlint` 1.90.0 → 1.93.0 (dev)
+    - `eslint-plugin-oxlint` 1.90.0 → 1.93.0 (dev)
+    - `vue-eslint-parser` 10.4.1 → 10.4.2 (dev)
+    - `vite` 8.3.6 → 8.3.7 (dev)
+
 ## [1.3.3] - 2026-11-06
 
 ### Added
