@@ -1,13 +1,12 @@
-import { copyFileSync, cpSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import {copyFileSync, cpSync, mkdirSync, readFileSync, rmSync, writeFileSync} from 'node:fs'
 
-// Builds one unpacked extension folder per browser family from the Vite output in `dist/`.
+// Builds the unpacked Chromium extension folder from the Vite output in `dist/`.
 const pkg = JSON.parse(readFileSync('package.json', 'utf8'))
 const readJson = (path) => JSON.parse(readFileSync(path, 'utf8'))
 const base = { ...readJson('extension/manifest.base.json'), version: pkg.version }
 
 const targets = {
   chromium: { ...base, ...readJson('extension/manifest.chromium.json') },
-  firefox: { ...base, ...readJson('extension/manifest.firefox.json') },
 }
 
 rmSync('build', { recursive: true, force: true })

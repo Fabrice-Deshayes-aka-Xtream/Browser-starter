@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Firefox support: the extension now targets Chromium-based browsers only (no Firefox build or release package).
+
 ### Changed
 
 - Weather block settings: the "use my location" checkbox is replaced by a clear choice between "My location" and "A specific city"; the city search is only shown in the
