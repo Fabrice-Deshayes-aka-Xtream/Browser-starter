@@ -65,6 +65,7 @@ interface GeocodingResponse {
     name: string
     country?: string
     admin1?: string
+    postcodes?: string[]
     latitude: number
     longitude: number
   }>
@@ -145,6 +146,7 @@ export async function searchCities(query: string, language: string): Promise<Cit
   return (data.results ?? []).map((r) => ({
     name: r.admin1 && r.admin1 !== r.name ? `${r.name} (${r.admin1})` : r.name,
     country: r.country,
+    postcode: r.postcodes?.[0],
     latitude: r.latitude,
     longitude: r.longitude,
   }))

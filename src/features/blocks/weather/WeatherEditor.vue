@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref} from 'vue'
+import {computed, ref} from 'vue'
 import {useI18n} from 'vue-i18n'
 import type {WeatherBlockConfig} from '@/core/config/schema'
 import {searchCities} from './weatherApi'
@@ -24,6 +24,14 @@ async function search() {
   }
 }
 
+function label(city: NonNullable<WeatherBlockConfig['city']>) {
+  return [city.postcode ? `${city.name} ${city.postcode}` : city.name, city.country]
+    .filter(Boolean)
+    .join(', ')
+}
+
+const canSave = computed(() => draft.value.useLocation || !!draft.value.city)
+
 function pick(city: NonNullable<WeatherBlockConfig['city']>) {
   draft.value.city = city
   results.value = []
@@ -33,31 +41,47 @@ function pick(city: NonNullable<WeatherBlockConfig['city']>) {
 
 <template>
   <form class="form" @submit.prevent="emit('save', draft)">
-    <label class="check">
-      <input v-model="draft.useLocation" type="checkbox"/>
-      {{ t('weather.useLocation') }}
-    </label>
-    <p v-if="draft.city" class="current">
-      {{
-        draft.useLocation
-          ? t('weather.fallbackCity', {name: draft.city.name})
-          : `${draft.city.name} (${draft.city.country})`
-      }}
-    </p>
-    <div class="search">
-      <input
-        v-model="query"
-        :placeholder="t('weather.searchCity')"
-        @keydown.enter.prevent="search"
-      />
-      <button type="button" class="btn" @click="search">{{ t('weather.search') }}</button>
-    </div>
-    <p v-if="searchFailed" class="error">{{ t('weather.error') }}</p>
-    <ul v-if="results.length" class="results">
-      <li v-for="city in results" :key="`${city.latitude},${city.longitude}`">
-        <button type="button" @click="pick(city)">{{ city.name }}, {{ city.country }}</button>
-      </li>
-    </ul>
+    <fieldset class="mode">
+      <legend>{{ t('weather.locationMode') }}</legend>
+      <div class="segmented">
+        <label :class="{active: draft.useLocation}">
+          <input v-model="draft.useLocation" type="radio" :value="true"/>
+          {{ t('weather.modeLocation') }}
+        </label>
+        <label :class="{active: !draft.useLocation}">
+          <input v-model="draft.useLocation" type="radio" :value="false"/>
+          {{ t('weather.modeCity') }}
+        </label>
+      </div>
+    </fieldset>
+    <template v-if="draft.useLocation">
+      <p class="hint">
+        {{ t('weather.locationHint') }}
+        <template v-if="draft.city">{{
+            t('weather.fallbackCity', {name: draft.city.name})
+          }}
+        </template>
+      </p>
+    </template>
+    <template v-else>
+      <p v-if="draft.city" class="current">
+        {{ t('weather.selectedCity', {name: label(draft.city)}) }}
+      </p>
+      <div class="search">
+        <input
+          v-model="query"
+          :placeholder="t('weather.searchCity')"
+          @keydown.enter.prevent="search"
+        />
+        <button type="button" class="btn" @click="search">{{ t('weather.search') }}</button>
+      </div>
+      <p v-if="searchFailed" class="error">{{ t('weather.error') }}</p>
+      <ul v-if="results.length" class="results">
+        <li v-for="city in results" :key="`${city.latitude},${city.longitude}`">
+          <button type="button" @click="pick(city)">{{ label(city) }}</button>
+        </li>
+      </ul>
+    </template>
     <label>
       {{ t('weather.unit') }}
       <select v-model="draft.unit">
@@ -82,7 +106,10 @@ function pick(city: NonNullable<WeatherBlockConfig['city']>) {
       {{ t('weather.showSunMoon') }}
     </label>
     <div class="actions">
-      <button type="submit" class="btn primary">{{ t('weather.save') }}</button>
+      <button type="submit" class="btn primary" :disabled="!canSave">{{
+          t('weather.save')
+        }}
+      </button>
       <button type="button" class="btn" @click="emit('cancel')">{{ t('weather.cancel') }}</button>
     </div>
   </form>
@@ -115,6 +142,55 @@ label {
 .current {
   margin: 0;
   font-weight: 600;
+}
+
+.hint {
+  margin: 0;
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+.mode {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 0.85rem;
+}
+
+.mode legend {
+  padding: 0;
+  margin-bottom: 0.25rem;
+}
+
+.segmented {
+  display: flex;
+  border: 1px solid var(--hover);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.segmented label {
+  flex: 1;
+  align-items: center;
+  padding: 0.4rem 0.5rem;
+  text-align: center;
+  cursor: pointer;
+}
+
+.segmented label.active {
+  background: var(--hover);
+  font-weight: 600;
+}
+
+.segmented input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.segmented label:has(input:focus-visible) {
+  outline: 2px solid currentColor;
+  outline-offset: -2px;
 }
 
 .check {
