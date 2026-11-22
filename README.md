@@ -1,21 +1,25 @@
 # Browser starter
 
-A customizable start page / new tab for your browser: a multi-engine search bar and a free-form layout of columns and blocks. 
-Compatible with chromium-based browsers (Chrome, Edge, Vivaldi, Brave...) and Firefox.
+A customizable start page / new tab for your browser: a multi-engine search bar and a free-form layout of columns and blocks.
+Compatible with chromium-based browsers (Chrome, Edge, Vivaldi, Brave...).
 Everything is stored locally; no account, no server, no ads.
 Open source, MIT license. See [PRIVACY.md](PRIVACY.md) for details.
 
 ## Features
 
-- **Search bar** – Google by default; click the logo to switch to DuckDuckGo, Bing, Perplexity, YouTube, IMDb, Amazon, Wikipedia, GitHub, or add your own engine.
+- **Search bar** – multi-engine search bar, with many engines by default, or add your own.
 - **Customizable layout** – any number of columns (1–8), resizable widths, blocks you can reorder, move between columns. View mode by default, edit mode on demand.
 - **Blocks**
   - *Bookmarks*: titled groups of links, automatic favicon or your own uploaded icon, drag to reorder.
   - *Weather*: current conditions and forecast for a city ([Open-Meteo](https://open-meteo.com/), no API key). Optional (block settings): use the browser position (asks for
-    permission; the place is named with [OpenStreetMap Nominatim](https://nominatim.openstreetmap.org/), the chosen city being the fallback), rain in the next hour (4 × 15 min
-    grid,
-    colored by intensity) and sunrise/sunset (as a sentence) with the moon phase.
-  - *News*: mix several RSS/Atom feeds of your choice in a single merged view, choose how many items to display, with thumbnails, favicons or nothing. Add feeds from predefined lists per language (French, English) grouped by category (news, science, technology, business, sports, culture), or add a custom feed by URL and name.
+    permission; the place is
+    named with [OpenStreetMap Nominatim](https://nominatim.openstreetmap.org/), the chosen city being the fallback), rain in the next hour (4 × 15 min grid, colored by intensity)
+    and sunrise/sunset (as a sentence)
+    with the moon phase.
+  - *News*: mix several RSS/Atom feeds of your choice in a single merged view, choose how many items to display, with thumbnails, favicons or nothing. Add feeds from predefined
+    lists per language (French, English) grouped by category (news, science, technology, business, sports, culture), or add a custom feed by URL and name.
+  - *Today*: the date, the local time and optional extra clocks for other time zones, and the next events of one or several iCal calendars (custom URLs, optional name) merged
+    together, with an optional emoji per event. Each part can be toggled, and the number of events is configurable.
 - **Workspaces** – create as many workspaces as you like, each with its own layout and blocks, e.g. one start page for home and another for work.
 - **Backup** – export/import each workspace as JSON.
 - **Local cache** – to speed up the page display, avoid useless requests and allow offline display, all data coming from the internet (RSS feeds, weather, calendar...) is cached
@@ -58,8 +62,8 @@ npm install
 npm run build:extension
 ```
 
-- **Chrome / Edge / Vivaldi / Brave**: open `chrome://extensions` (or `edge://extensions`, `vivaldi://extensions`), enable developer mode, "Load unpacked" and select `build/chromium`.
-- **Firefox**: open `about:debugging#/runtime/this-firefox`, "Load Temporary Add-on" and select `build/firefox/manifest.json`. Firefox may require granting the "access to all sites" permission manually (needed to read RSS feeds and favicons).
+**Chrome / Edge / Vivaldi / Brave**: open `chrome://extensions` (or `edge://extensions`, `vivaldi://extensions`), enable developer mode, "Load unpacked" and select
+`build/chromium`.
 
 This extension replaces your browser home page.
 
