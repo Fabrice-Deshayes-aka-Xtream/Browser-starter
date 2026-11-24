@@ -1,6 +1,9 @@
 import type { SearchEngine } from './schema'
 
+export const BROWSER_ENGINE_ID = 'browser'
+
 export const DEFAULT_ENGINES: SearchEngine[] = [
+  { id: BROWSER_ENGINE_ID, name: 'Browser default' },
   { id: 'google', name: 'Google', urlTemplate: 'https://www.google.com/search?q={query}' },
   { id: 'duckduckgo', name: 'DuckDuckGo', urlTemplate: 'https://duckduckgo.com/?q={query}' },
   { id: 'bing', name: 'Bing', urlTemplate: 'https://www.bing.com/search?q={query}' },

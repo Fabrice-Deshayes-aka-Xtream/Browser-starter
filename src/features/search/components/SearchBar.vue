@@ -3,7 +3,7 @@ import { onMounted, ref } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 import BaseDialog from '@/shared/components/BaseDialog.vue'
 import { useEditMode } from '@/shared/composables/useEditMode'
-import { buildSearchUrl } from '../engines'
+import { runSearch } from '../engines'
 import { useSearchEngines } from '../useSearchEngines'
 import EngineIcon from './EngineIcon.vue'
 import EngineListEditor from './EngineListEditor.vue'
@@ -34,12 +34,7 @@ function onSelect(id: string) {
 }
 
 function onSubmit() {
-  if (query.value.trim() === '') return
-  window.open(
-    buildSearchUrl(currentEngine.value.urlTemplate, query.value),
-    '_blank',
-    'noopener,noreferrer',
-  )
+  runSearch(currentEngine.value, query.value)
 }
 </script>
 

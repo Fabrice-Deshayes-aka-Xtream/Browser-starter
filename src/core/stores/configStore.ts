@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { computed, ref, watch } from 'vue'
 import { createDefaultConfig, createDefaultWorkspace, createId } from '../config/defaults'
+import { BROWSER_ENGINE_ID, DEFAULT_ENGINES } from '../config/defaultEngines'
 import {
   parseConfig,
   parseWorkspace,
@@ -12,6 +13,15 @@ import { getStorageAdapter } from '../storage/storageAdapter'
 
 const STORAGE_KEY = 'browser-starter.config'
 const SAVE_DEBOUNCE_MS = 300
+
+/** Adds the built-in browser engine, which cannot be removed, to configurations saved before it existed. */
+export function ensureBrowserEngine(config: AppConfig) {
+  const browserEngine = DEFAULT_ENGINES.find((e) => e.id === BROWSER_ENGINE_ID)!
+  for (const { search } of config.workspaces) {
+    if (!search.engines.some((e) => e.id === BROWSER_ENGINE_ID))
+      search.engines.unshift({ ...browserEngine })
+  }
+}
 
 export const useConfigStore = defineStore('config', () => {
   const config = ref<AppConfig>(createDefaultConfig())
@@ -27,6 +37,7 @@ export const useConfigStore = defineStore('config', () => {
     if (stored) {
       try {
         config.value = parseConfig(stored)
+        ensureBrowserEngine(config.value)
       } catch (error) {
         console.error('Stored configuration is invalid, using defaults', error)
       }

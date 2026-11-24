@@ -7,8 +7,11 @@ const id = z.string().min(1)
 export const searchEngineSchema = z.object({
   id,
   name: z.string().min(1),
-  /** URL template where `{query}` is replaced by the encoded search terms. */
-  urlTemplate: z.string().includes('{query}'),
+  /**
+   * URL template where `{query}` is replaced by the encoded search terms.
+   * Absent for the built-in browser engine, which delegates to the browser's default search.
+   */
+  urlTemplate: z.string().includes('{query}').optional(),
   /** Optional icon: data URL or http(s) URL. Filled automatically with the site favicon when absent. */
   icon: z.string().optional(),
 })

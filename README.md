@@ -7,7 +7,8 @@ Open source, MIT license. See [PRIVACY.md](PRIVACY.md) for details.
 
 ## Features
 
-- **Search bar** – multi-engine search bar, with many engines by default, or add your own.
+- **Search bar** – multi-engine search bar. Default is the one defined in your browser configuration. Changing search engine in Browser Starter will not change your browser 
+  default engine configuration. 
 - **Customizable layout** – any number of columns (1–8), resizable widths, blocks you can reorder, move between columns. View mode by default, edit mode on demand.
 - **Blocks**
   - *Bookmarks*: titled groups of links, automatic favicon or your own uploaded icon, drag to reorder.

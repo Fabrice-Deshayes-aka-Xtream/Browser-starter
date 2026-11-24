@@ -5,7 +5,8 @@ import { fetchFavicon } from '@/features/blocks/bookmarks/favicon'
 /** Session cache by site origin; `undefined` means no favicon could be loaded. */
 const cache = new Map<string, Promise<string | undefined>>()
 
-function originOf(urlTemplate: string): string | undefined {
+function originOf(urlTemplate: string | undefined): string | undefined {
+  if (!urlTemplate) return undefined
   try {
     return new URL(urlTemplate.replace('{query}', '')).origin
   } catch {

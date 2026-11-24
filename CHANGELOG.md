@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.3.5] - 2026-11-24
 
 ### Removed
 
@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Search: new installations use a built-in "Browser default" engine that runs the search with the browser's current default search engine (`chrome.search` API, new `search` permission), instead of Google. Existing configurations are unchanged, except that the engine is added to their engine list (it cannot be removed).
 - Weather block settings: the "use my location" checkbox is replaced by a clear choice between "My location" and "A specific city"; the city search is only shown in the
   latter mode.
 - Weather block city search: the postal code is shown (when available) to tell apart cities with the same name.
@@ -21,16 +22,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `tldts` 7.4.19 → 7.5.5
     - `vue` 3.5.45 → 3.5.46
     - `vue-i18n` 11.4.18 → 11.4.23
+    - `@vueuse/core` 15.0.0 → 15.1.0
+    - `@types/chrome` 0.3.7 → 0.3.8 (dev)
     - `@playwright/test` 1.65.0 → 1.65.1 (dev)
     - `@tsconfig/node24` 24.0.5 → 24.0.6 (dev)
     - `@vitejs/plugin-vue` 6.0.10 → 6.0.11 (dev)
     - `@vue/test-utils` 2.5.1 → 2.6.0 (dev)
     - `eslint` 10.14.0 → 10.15.0 (dev)
-    - `eslint-plugin-oxlint` 1.93.0 → 1.94.0 (dev)
+    - `eslint-plugin-oxlint` 1.93.0 → 1.95.0 (dev)
     - `eslint-plugin-vue` 10.12.0 → 10.12.1 (dev)
     - `jsdom` 31.0.0 → 31.0.1 (dev)
     - `npm-run-all2` 9.0.4 → 9.1.0 (dev)
-    - `oxlint` 1.93.0 → 1.94.0 (dev)
+    - `oxlint` 1.93.0 → 1.95.0 (dev)
     - `prettier` 3.9.10 → 3.10.1 (dev)
     - `vite` 8.3.7 → 8.3.8 (dev)
     - `vitest` 5.1.0 → 5.1.1 (dev)

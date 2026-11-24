@@ -11,6 +11,7 @@
   "chrome_url_overrides": { "newtab": "index.html" },
   "permissions": [
     "storage",
+    "search",
     "geolocation"
   ],
   "host_permissions": ["<all_urls>"]

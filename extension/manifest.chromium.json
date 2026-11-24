@@ -1,6 +1,7 @@
 {
   "permissions": [
     "storage",
+    "search",
     "tabs",
     "geolocation"
   ],

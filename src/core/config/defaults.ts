@@ -1,4 +1,4 @@
-import { DEFAULT_ENGINES } from './defaultEngines'
+import { BROWSER_ENGINE_ID, DEFAULT_ENGINES } from './defaultEngines'
 import { CONFIG_VERSION, type AppConfig, type Workspace } from './schema'
 
 export function createId(): string {
@@ -9,7 +9,7 @@ export function createDefaultWorkspace(name: string): Workspace {
   return {
     id: createId(),
     name,
-    search: { defaultEngineId: 'google', engines: DEFAULT_ENGINES.map((e) => ({ ...e })) },
+    search: { defaultEngineId: BROWSER_ENGINE_ID, engines: DEFAULT_ENGINES.map((e) => ({ ...e })) },
     layout: {
       columns: [
         { id: createId(), width: 1, blocks: [] },

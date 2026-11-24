@@ -8,7 +8,7 @@ Si je te demande de mettre à jour les dépendances, tu dois :
 - lancer les tests, le lint et le type-check pour vérifier que tout va bien
 - vérifier également les versions dans fichiers de la CI github (fichiers .github/workflows/*.yml) et les mettre à jour si nécessaire
 - mettre à jour le changelog (sur la version [Unreleased]) pour indiquer toutes les dépendances qui ont été mises à jour
-- si une dépendances a déjà été mise à jour dans la version courante, ne pas la réécrire, mais seulement mettre à jour la version si elle a changé
+- si une dépendances a déjà été mise à jour dans la version courante, ne pas la réécrire, mais seulement mettre à jour la version cible si elle a changé
 
 Exemple de mise à jour du changelog pour une dépendance npm (indiquer (dev) pour les dépendances de dev) :
 

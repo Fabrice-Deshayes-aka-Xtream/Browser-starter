@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useSortableList } from '@/shared/composables/useSortableList'
+import { BROWSER_ENGINE_ID } from '@/core/config/defaultEngines'
 import { useSearchEngines } from '../useSearchEngines'
 import CustomEngineForm from './CustomEngineForm.vue'
 import EngineIcon from './EngineIcon.vue'
@@ -27,7 +28,7 @@ function onAdd(name: string, urlTemplate: string) {
         <span class="name">{{ engine.name }}</span>
         <button
           type="button"
-          :disabled="engines.length <= 1"
+          :disabled="engines.length <= 1 || engine.id === BROWSER_ENGINE_ID"
           :aria-label="$t('search.remove')"
           @click="removeEngine(engine.id)"
         >

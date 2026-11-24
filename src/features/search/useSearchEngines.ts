@@ -1,7 +1,7 @@
 import { computed } from 'vue'
 import { useConfigStore } from '@/core/stores/configStore'
 import { createId } from '@/core/config/defaults'
-import { DEFAULT_ENGINES } from '@/core/config/defaultEngines'
+import { BROWSER_ENGINE_ID, DEFAULT_ENGINES } from '@/core/config/defaultEngines'
 import { toEngineView, type EngineView } from './engines'
 
 export function useSearchEngines() {
@@ -21,9 +21,9 @@ export function useSearchEngines() {
     search.value.engines.push({ id: createId(), name, urlTemplate })
   }
 
-  /** The last remaining engine cannot be removed. */
+  /** The last remaining engine and the built-in browser engine cannot be removed. */
   function removeEngine(id: string) {
-    if (search.value.engines.length <= 1) return
+    if (id === BROWSER_ENGINE_ID || search.value.engines.length <= 1) return
     search.value.engines = search.value.engines.filter((e) => e.id !== id)
     if (search.value.defaultEngineId === id)
       search.value.defaultEngineId = search.value.engines[0]!.id

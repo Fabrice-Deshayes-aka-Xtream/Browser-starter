@@ -13,3 +13,6 @@ Other network requests:
 
 - Weather blocks query [Open-Meteo](https://open-meteo.com/) with the coordinates of the city you chose.
 - Searches are sent to the search engine you pick, exactly as if you typed them there.
+
+The `search` permission is used only to run a search with the default search engine of your browser (`chrome.search` API) when the "Browser default" engine is selected. 
+The extension never reads or changes your browser's search settings, and the terms you search for are not stored or sent anywhere else.
