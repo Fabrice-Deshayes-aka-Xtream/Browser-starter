@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import {expect, type Page, test} from '@playwright/test'
 
 const STORAGE_KEY = 'browser-starter.config'
 
@@ -105,8 +105,9 @@ test('search engines are managed in edit mode only', async ({ page }) => {
     .fill('https://www.qwant.com/?q={query}')
   await page.getByRole('button', { name: /^(Save|Enregistrer)$/ }).click()
   await page
+    .getByRole('listitem')
+    .filter({hasText: 'Google'})
     .getByRole('button', { name: /Remove|Supprimer/ })
-    .first()
     .click()
   await page.keyboard.press('Escape')
   await page.getByRole('button', { name: /^(Done|Terminer)$/ }).click()
