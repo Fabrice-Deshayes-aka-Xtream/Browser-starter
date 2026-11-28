@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { useLayout } from '@/features/layout/useLayout'
-import type { Block, Bookmark, BookmarksBlockConfig } from '@/core/config/schema'
-import { createId } from '@/core/config/defaults'
+import {computed, ref} from 'vue'
+import {useLayout} from '@/features/layout/useLayout'
+import type {Block, Bookmark, BookmarksBlockConfig} from '@/core/config/schema'
+import {createId} from '@/core/config/defaults'
 import BaseDialog from '@/shared/components/BaseDialog.vue'
-import { useSortableList } from '@/shared/composables/useSortableList'
+import {useSortableList} from '@/shared/composables/useSortableList'
 import BookmarkForm from './BookmarkForm.vue'
 import BookmarkIcon from './BookmarkIcon.vue'
 
@@ -91,7 +91,11 @@ useSortableList(list, {
     </div>
     <h3 v-else-if="block.config.title" class="title">{{ block.config.title }}</h3>
 
-    <ul ref="list" class="links" :class="[{ tiles, editing }, tiles && block.config.tileSize]">
+    <ul
+      ref="list"
+      :data-block-id="block.id"
+      class="links"
+      :class="[{ tiles, editing }, tiles && block.config.tileSize]">
       <li v-for="link in links" :key="link.id" class="link" :data-link-id="link.id">
         <a
           :href="link.url"
