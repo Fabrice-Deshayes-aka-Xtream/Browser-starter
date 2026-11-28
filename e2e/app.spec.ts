@@ -28,11 +28,11 @@ test('blocks can be added in edit mode and persist after reload', async ({ page 
     .first()
     .click()
   await page.getByRole('button', { name: /Bookmarks|Favoris/ }).click()
-  await expect(page.locator('[data-block-id]')).toHaveCount(1)
+  await expect(page.locator('section[data-block-id]')).toHaveCount(1)
 
   await expect.poll(() => readConfig(page)).toContain('"bookmarks"')
   await page.reload()
-  await expect(page.locator('[data-block-id]')).toHaveCount(1)
+  await expect(page.locator('section[data-block-id]')).toHaveCount(1)
 })
 
 test('a bookmark can be added to a group', async ({ page }) => {
