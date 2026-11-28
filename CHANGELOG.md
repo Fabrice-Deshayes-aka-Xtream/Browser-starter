@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Updated dependencies:
+    - `tldts` 7.5.5 → 7.6.2
+    - `vue-i18n` 11.4.23 → 11.4.24
+    - `@types/chrome` 0.3.8 → 0.3.9 (dev)
+    - `@types/node` 26.6.6 → 26.6.11 (dev)
+    - `eslint` 10.15.0 → 10.16.0 (dev)
+    - `eslint-config-prettier` 10.1.8 → 10.1.9 (dev)
+    - `vite` 8.3.8 → 8.4.0 (dev)
+    - `vitest` 5.1.1 → 5.1.2 (dev)
+
 ### Fixed
 
 - Edit mode: bookmarks can be dragged from one bookmarks block to another again.
